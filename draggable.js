@@ -55,7 +55,7 @@ angular.module("draggable", [])
                         element.centerX = (element.width()/2);
                         element.centerY = (element.height()/2);
                         element.addClass('dragging');
-                        position(offset.left - $window.scrollTop(), offset.top- $window.scrollTop());
+                        position(offset.left - $window.scrollLeft(), offset.top- $window.scrollTop());
                         $document.on(_moveEvents, onmove);
                         $document.on(_releaseEvents, onrelease);
                         $rootScope.$broadcast('draggable:start', {element:element, data:_data});
