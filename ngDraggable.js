@@ -2,16 +2,16 @@
  *
  * @usage <div ng-draggable=""></div>
  */
-angular.module("draggable", [])
-        .directive('ngDraggable', ['$rootScope', '$parse', function ($rootScope, $parse) {
+angular.module("ngDraggable", [])
+        .directive('ngEnableDrag', ['$rootScope', '$parse', function ($rootScope, $parse) {
             return {
                 restrict: 'A',
                 link: function (scope, element, attrs) {
-                    scope.value = attrs.ngDraggable;
+                    scope.value = attrs.ngEnableDrag;
                     console.log("ngDraggable", "link", "", scope.value);
-
+                  //  return;
                     var offset;
-
+                    var _hasTouch = ('ontouchstart' in document.documentElement);
                     var _pressEvents = 'touchstart mousedown';
                     var _moveEvents = 'touchmove mousemove';
                     var _releaseEvents = 'touchend mouseup';
@@ -20,10 +20,12 @@ angular.module("draggable", [])
                     var $window = $(window);
                     var _data = null;
 
+                    var _pressTimer=null;
+
                     var onDragSuccessCallback = $parse(attrs.ngOnDragSuccess) || function(){};
 
                     var initialize = function () {
-
+                        element.attr('draggable', 'false'); // prevent native drag
                         toggleListeners(true);
                     };
 
@@ -35,9 +37,12 @@ angular.module("draggable", [])
                         // add listeners.
 
                         scope.$on('$destroy', onDestroy);
-                        scope.$watch(attrs.ngDraggable, onDraggableChange);
+                        scope.$watch(attrs.ngEnableDrag, onDraggableChange);
                         scope.$watch(attrs.dragData, onDragDataChange);
                         element.on(_pressEvents, onpress);
+                        if(! _hasTouch){
+                            element.on('mousedown', function(){ return false;}); // prevent native drag
+                        }
                     };
                     var onDestroy = function (enable) {
                         toggleListeners(false);
@@ -50,12 +55,35 @@ angular.module("draggable", [])
                         console.log("41", "ngDraggable::onDraggableChange", "newVal", newVal);
                     }
                     var onpress = function(evt) {
+
+                        if(_hasTouch){
+                            cancelPress();
+                            _pressTimer = setTimeout(function(){
+                                cancelPress();
+                                onlongpress(evt);
+                            },100);
+                            $document.on(_moveEvents, cancelPress);
+                            $document.on(_releaseEvents, cancelPress);
+                        }else{
+                            onlongpress(evt);
+                        }
+
+                    }
+                    var cancelPress = function() {
+                        clearTimeout(_pressTimer);
+                        $document.off(_moveEvents, cancelPress);
+                        $document.off(_releaseEvents, cancelPress);
+                    }
+                    var onlongpress = function(evt) {
                         evt.preventDefault();
                         offset = element.offset();
                         element.centerX = (element.width()/2);
                         element.centerY = (element.height()/2);
                         element.addClass('dragging');
-                        position(offset.left - $window.scrollLeft(), offset.top- $window.scrollTop());
+                        var tx=(evt.pageX || evt.originalEvent.touches[0].pageX)-element.centerX-$window.scrollLeft()
+                        var ty=(evt.pageY || evt.originalEvent.touches[0].pageY) -element.centerY-$window.scrollTop();
+
+                        position(tx, ty);
                         $document.on(_moveEvents, onmove);
                         $document.on(_releaseEvents, onrelease);
                         $rootScope.$broadcast('draggable:start', {element:element, data:_data});
@@ -90,7 +118,7 @@ angular.module("draggable", [])
                         element.css({left:'',top:'', position:'', 'z-index':''});
                     }
                     var position = function(x,y) {
-                        element.css({left:x,top:y, position:'fixed', 'z-index':9999});
+                        element.css({left:x,top:y, position:'fixed', 'z-index':99999});
                     }
                     initialize();
                 }
