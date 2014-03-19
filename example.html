@@ -42,9 +42,24 @@
         padding-top:90px;
         display: block;
         margin:20px auto;
+        position: relative;
     }
     [ng-drop-area].drag-enter{
         border:solid 5px red;
+    }
+    [ng-drop-area] span.title{
+        display: block;
+        position: absolute;
+        top:50%;
+        left:50%;
+        width: 200px;
+        height: 20px;
+        margin-left: -100px;
+        margin-top: -10px;
+    }
+    [ng-drop-area] div{
+        position: relative;
+        z-index: 2;
     }
 
   </style>
@@ -64,7 +79,7 @@
 
       <hr/>
       <div ng-drop-area="" ng-on-drop="onDropComplete1($data,$event)">
-          Drop area #1
+          <span class="title">Drop area #1</span>
 
           <div ng-repeat="obj in droppedObjects1" ng-draggable="true" drag-data="obj" ng-on-drag-success="onDragSuccess1($data,$event)">
               {{obj.name}}
@@ -73,7 +88,7 @@
       </div>
 
       <div ng-drop-area="" ng-on-drop="onDropComplete2($data,$event)">
-          Drop area #2
+          <span class="title">Drop area #2</span>
 
           <div ng-repeat="obj in droppedObjects2" ng-draggable="true" drag-data="obj" ng-on-drag-success="onDragSuccess2($data,$event)">
               {{obj.name}}

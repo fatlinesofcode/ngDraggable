@@ -195,20 +195,19 @@ angular.module("draggable", [])
                         }
                     }
                     var hitTest = function(a, b) {
-                        var aPos = a.position();
-                        var bPos = b.position();
+                        var aPos = a.offset();
+                        var bPos = b.offset();
 
-                        console.log("200","hitTest","hitTest", a.height(), b.height());
 
                         var aLeft = aPos.left;
-                        var aRight = aPos.left + a.width();
+                        var aRight = aPos.left + a.outerWidth();
                         var aTop = aPos.top;
-                        var aBottom = aPos.top + a.height();
+                        var aBottom = aPos.top + a.outerHeight();
 
                         var bLeft = bPos.left;
-                        var bRight = bPos.left + b.width();
+                        var bRight = bPos.left + b.outerWidth();
                         var bTop = bPos.top;
-                        var bBottom = bPos.top + b.height();
+                        var bBottom = bPos.top + b.outerHeight();
 
                         return !( bLeft > aRight || bRight < aLeft || bTop > aBottom || bBottom < aTop  );
                     }
