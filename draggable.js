@@ -3,37 +3,14 @@
  * @usage <div ng-draggable=""></div>
  */
 angular.module("draggable", [])
-        .factory('draggableService', function() {
-            var scope = {};
-
-            scope.draggingElement = null
-
-            var initialize = function () {
-                scope.dropsAreas = [];
-            };
-            scope.registerDropArea = function(element) {
-                scope.dropsAreas.push(element);
-            }
-            initialize();
-
-            return scope;
-        })
         .directive('ngDraggable', ['$rootScope', '$parse', function ($rootScope, $parse) {
             return {
                 restrict: 'A',
-                //priority:0,
-                //replace:true,
-                //scope:{ data: '=draggable' }, // get data in isolated scope
-                //template: '<div class="draggable" data-value="{{value}}"></div>',
-
                 link: function (scope, element, attrs) {
-                    // attribute value
                     scope.value = attrs.ngDraggable;
                     console.log("ngDraggable", "link", "", scope.value);
-                    // isolated scope data
-                    //console.log("draggable","link","", scope.data);
 
-                    var offset,offsetX,offsetY;
+                    var offset;
 
                     var _pressEvents = 'touchstart mousedown';
                     var _moveEvents = 'touchmove mousemove';
@@ -61,8 +38,6 @@ angular.module("draggable", [])
                         scope.$watch(attrs.ngDraggable, onDraggableChange);
                         scope.$watch(attrs.dragData, onDragDataChange);
                         element.on(_pressEvents, onpress);
-                        //isolated scope watch
-                        //dataWatch = scope.$watch('data', onDataChange);
                     };
                     var onDestroy = function (enable) {
                         toggleListeners(false);
@@ -88,7 +63,7 @@ angular.module("draggable", [])
                     }
                     var onmove = function(evt) {
                         evt.preventDefault();
-                    //    return;
+
                         var tx=(evt.pageX || evt.originalEvent.touches[0].pageX)-element.centerX-$window.scrollLeft()
                         var ty=(evt.pageY || evt.originalEvent.touches[0].pageY) -element.centerY-$window.scrollTop();
 
@@ -124,21 +99,11 @@ angular.module("draggable", [])
         .directive('ngDropArea', ['$parse', function ($parse) {
             return {
                 restrict: 'A',
-                //priority:0,
-                //replace:true,
-                //scope:{ data: '=draggable' }, // get data in isolated scope
-                //template: '<div class="draggable" data-value="{{value}}"></div>',
                 link: function (scope, element, attrs) {
-                    // attribute value
                     scope.value = attrs.ngDropArea;
 
                     var onDropCallback = $parse(attrs.ngOnDrop) || function(){};
-                    console.log("ngDropArea", "link", "", scope.value);
-                    // isolated scope data
-                    //console.log("draggable","link","", scope.data);
-
                     var initialize = function () {
-                   //     draggableService.registerDropArea(element);
                         toggleListeners(true);
                     };
 
@@ -154,8 +119,6 @@ angular.module("draggable", [])
                         scope.$on('draggable:start', onDragStart);
                         scope.$on('draggable:move', onDragMove);
                         scope.$on('draggable:end', onDragEnd);
-                        //isolated scope watch
-                        //dataWatch = scope.$watch('data', onDataChange);
                     };
                     var onDestroy = function (enable) {
                         toggleListeners(false);
@@ -171,10 +134,11 @@ angular.module("draggable", [])
                     }
                     var onDragEnd = function(evt, obj) {
                         if(isTouching(obj.element)){
+                            // call the ngDraggable element callback
                             if(obj.callback){
                                 obj.callback(evt);
                             }
-
+                            // call the ngDrop element callback
                             scope.$apply(function () {
                                 onDropCallback(scope, {$data: obj.data, $event: evt});
                             });
