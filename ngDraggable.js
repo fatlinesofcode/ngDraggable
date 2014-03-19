@@ -115,8 +115,6 @@ angular.module("ngDraggable", [])
                     var onrelease = function(evt) {
                         if(! _dragEnabled)return;
                         evt.preventDefault();
-                        _mx = (evt.pageX || evt.originalEvent.touches[0].pageX);
-                        _my = (evt.pageY || evt.originalEvent.touches[0].pageY);
                         $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, element:element, data:_data, callback:onDragComplete});
                         element.removeClass('dragging');
                         reset();
