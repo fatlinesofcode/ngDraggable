@@ -12,11 +12,14 @@ Draggable usage:
 <div ng-draggable="true">
   Draggable div
 </div>
+```
 
 Drop area usage:
+```html
 <div ng-drop-area="" >
   Drop area
 </div>
+```
 
 ## Example
 See [`example.html`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example.html).
