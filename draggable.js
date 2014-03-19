@@ -171,12 +171,14 @@ angular.module("draggable", [])
                     }
                     var onDragEnd = function(evt, obj) {
                         if(isTouching(obj.element)){
-                            scope.$apply(function () {
-                                onDropCallback(scope, {$data: obj.data, $event: evt});
-                            });
                             if(obj.callback){
                                 obj.callback(evt);
                             }
+                            
+                            scope.$apply(function () {
+                                onDropCallback(scope, {$data: obj.data, $event: evt});
+                            });
+
                         }
                         updateDragStyles(false, obj.element);
                     }
