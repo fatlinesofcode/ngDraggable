@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ngDraggable</title>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/2.3.1/spruce/bootstrap.min.css">
+  <style>
+    [btf-dragon] {
+      padding: 20px;
+      border: 1px solid red;
+    }
+    *{
+        -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+    }
+    [ng-draggable]{
+        -moz-user-select: -moz-none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    [ng-draggable]{
+        width: 100px;
+        height: 100px;
+        background: rgba(255,0,0, 0.5);
+        color:white;
+        text-align: center;
+        padding-top:40px;
+        display: inline-block;
+        margin:0 10px;
+    }
+    [ng-draggable].drag-over{
+        border:solid 1px red;
+    }
+    [ng-draggable].dragging{
+        opacity: 0.5;
+    }
+    [ng-drop-area]{
+        background: rgba(0,255,0, 0.5);
+        text-align: center;
+        width: 600px;
+        height: 200px;
+        padding-top:90px;
+        display: block;
+        margin:20px auto;
+    }
+    [ng-drop-area].drag-enter{
+        border:solid 5px red;
+    }
+
+  </style>
+</head>
+<body ng-app="ExampleApp">
+
+  <div class="container" ng-controller="MainCtrl">
+
+    <div class="row">
+      <h1>ngDraggable Example</h1>
+    </div>
+
+
+      <div ng-repeat="obj in draggableObjects" ng-draggable="true" drag-data="obj">
+          {{obj.name}}
+      </div>
+
+      <hr/>
+      <div ng-drop-area="" ng-on-drop="onDropComplete1($data,$event)">
+          Drop area #1
+
+          <div ng-repeat="obj in droppedObjects1" ng-draggable="true" drag-data="obj" ng-on-drag-success="onDragSuccess1($data,$event)">
+              {{obj.name}}
+          </div>
+
+      </div>
+
+      <div ng-drop-area="" ng-on-drop="onDropComplete2($data,$event)">
+          Drop area #2
+
+          <div ng-repeat="obj in droppedObjects2" ng-draggable="true" drag-data="obj" ng-on-drag-success="onDragSuccess2($data,$event)">
+              {{obj.name}}
+          </div>
+
+      </div>
+
+    <hr>
+
+
+
+  </div>
+  <footer style="margin-top:2000px;">footer</footer>
+
+
+  <script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+  <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.8/angular.min.js'></script>
+  <script src="draggable.js"></script>
+  <script>
+    angular.module('ExampleApp', ['draggable']).
+      controller('MainCtrl', function ($scope) {
+        $scope.draggableObjects = [{name:'one'}, {name:'two'}, {name:'three'}];
+        $scope.droppedObjects1 = [];
+        $scope.droppedObjects2= [];
+        $scope.onDropComplete1=function(data,evt){
+            var index = $scope.droppedObjects1.indexOf(data);
+            if (index == -1)
+            $scope.droppedObjects1.push(data);
+        }
+        $scope.onDragSuccess1=function(data,evt){
+            var index = $scope.droppedObjects1.indexOf(data);
+            if (index > -1) {
+                $scope.droppedObjects1.splice(index, 1);
+            }
+        }
+        $scope.onDragSuccess2=function(data,evt){
+            var index = $scope.droppedObjects2.indexOf(data);
+            if (index > -1) {
+                $scope.droppedObjects2.splice(index, 1);
+            }
+        }
+        $scope.onDropComplete2=function(data,evt){
+            var index = $scope.droppedObjects2.indexOf(data);
+            if (index == -1) {
+                $scope.droppedObjects2.push(data);
+            }
+        }
+      });
+  </script>
+</body>
+</html>
