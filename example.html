@@ -4,21 +4,18 @@
   <title>ngDraggable</title>
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/2.3.1/spruce/bootstrap.min.css">
   <style>
-    [btf-dragon] {
-      padding: 20px;
-      border: 1px solid red;
-    }
+
     *{
         -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
     }
-    [ng-enable-drag]{
+    [ng-drag]{
         -moz-user-select: -moz-none;
         -khtml-user-select: none;
         -webkit-user-select: none;
         -ms-user-select: none;
         user-select: none;
     }
-    [ng-enable-drag]{
+    [ng-drag]{
         width: 100px;
         height: 100px;
         background: rgba(255,0,0, 0.5);
@@ -27,14 +24,15 @@
         padding-top:40px;
         display: inline-block;
         margin:0 10px;
+        cursor: move;
     }
-    [ng-draggable].drag-over{
+    [ng-drag].drag-over{
         border:solid 1px red;
     }
-    [ng-draggable].dragging{
+    [ng-drag].dragging{
         opacity: 0.5;
     }
-    [ng-drop-area]{
+    [ng-drop]{
         background: rgba(0,255,0, 0.5);
         text-align: center;
         width: 600px;
@@ -44,10 +42,10 @@
         margin:20px auto;
         position: relative;
     }
-    [ng-drop-area].drag-enter{
+    [ng-drop].drag-enter{
         border:solid 5px red;
     }
-    [ng-drop-area] span.title{
+    [ng-drop] span.title{
         display: block;
         position: absolute;
         top:50%;
@@ -57,7 +55,7 @@
         margin-left: -100px;
         margin-top: -10px;
     }
-    [ng-drop-area] div{
+    [ng-drop] div{
         position: relative;
         z-index: 2;
     }
@@ -73,24 +71,24 @@
     </div>
 
 
-      <div ng-repeat="obj in draggableObjects" ng-enable-drag="true" drag-data="obj">
+      <div ng-repeat="obj in draggableObjects" ng-drag="true" ng-drag-data="obj">
           {{obj.name}}
       </div>
 
       <hr/>
-      <div ng-drop-area="" ng-on-drop="onDropComplete1($data,$event)">
+      <div ng-drop="true" ng-drop-success="onDropComplete1($data,$event)">
           <span class="title">Drop area #1</span>
 
-          <div ng-repeat="obj in droppedObjects1" ng-enable-drag="true" drag-data="obj" ng-on-drag-success="onDragSuccess1($data,$event)">
+          <div ng-repeat="obj in droppedObjects1" ng-drag="true" ng-drag-data="obj" ng-drag-success="onDragSuccess1($data,$event)">
               {{obj.name}}
           </div>
 
       </div>
 
-      <div ng-drop-area="" ng-on-drop="onDropComplete2($data,$event)">
+      <div ng-drop="true" ng-drop-success="onDropComplete2($data,$event)">
           <span class="title">Drop area #2</span>
 
-          <div ng-repeat="obj in droppedObjects2" ng-enable-drag="true" drag-data="obj" ng-on-drag-success="onDragSuccess2($data,$event)">
+          <div ng-repeat="obj in droppedObjects2" ng-drag="true" ng-drag-data="obj" ng-drag-success="onDragSuccess2($data,$event)">
               {{obj.name}}
           </div>
 

@@ -9,16 +9,29 @@ Drag and drop module for Angular JS with support for touch devices. [`demo`](htt
 
 Draggable usage:
 ```html
-<div ng-enable-drag="true">
+<div ng-drag="true" ng-drag-data="{obj}" ng-drag-success="onDragComplete($data,$event)" >
   Draggable div
 </div>
 ```
 
 Drop area usage:
 ```html
-<div ng-drop-area="" >
+<div ng-drop="true" ng-drop-success="onDropComplete($data,$event)" >
   Drop area
 </div>
+```
+
+Angular Controller:
+```javascript
+ app.controller('MainCtrl', function ($scope) {
+    $scope.onDragComplete=function(data,evt){
+       console.log("drag success, data:", data);
+    }
+    $scope.onDropComplete=function(data,evt){
+        console.log("drop success, data:", data);
+    }
+ }
+
 ```
 
 ## Example
