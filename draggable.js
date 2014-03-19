@@ -174,7 +174,7 @@ angular.module("draggable", [])
                             if(obj.callback){
                                 obj.callback(evt);
                             }
-                            
+
                             scope.$apply(function () {
                                 onDropCallback(scope, {$data: obj.data, $event: evt});
                             });

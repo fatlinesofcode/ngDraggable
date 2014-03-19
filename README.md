@@ -1,7 +1,7 @@
 ngDraggable
 ===========
 
-Drag and drop module for Angular JS with support for touch devices.
+Drag and drop module for Angular JS with support for touch devices. [`demo`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example.html).
 
 ## Usage
 1. Include the `draggable.js` script provided by this component into your app.
