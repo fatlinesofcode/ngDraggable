@@ -3,7 +3,7 @@
  * @usage <div ng-draggable=""></div>
  */
 angular.module("ngDraggable", [])
-        .directive('ngDrag', ['$rootScope', '$parse', function ($rootScope, $parse) {
+        .directive('ngDrag', ['$rootScope', '$parse', '$window', function ($rootScope, $parse, $window) {
             return {
                 restrict: 'A',
                 link: function (scope, element, attrs) {
@@ -16,8 +16,8 @@ angular.module("ngDraggable", [])
                     var _moveEvents = 'touchmove mousemove';
                     var _releaseEvents = 'touchend mouseup';
 
-                    var $document = $(document);
-                    var $window = $(window);
+                    var $window = $window;
+                    var $document = $window.document;
                     var _data = null;
 
                     var _dragEnabled = false;
