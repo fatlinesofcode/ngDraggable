@@ -21,18 +21,20 @@ Drop area usage:
 </div>
 ```
 
-Angular Controller:
-```javascript
- app.controller('MainCtrl', function ($scope) {
+### Angular Controller:
+
+```js
+app.controller('MainCtrl', function ($scope) {
     $scope.onDragComplete=function(data,evt){
        console.log("drag success, data:", data);
     }
     $scope.onDropComplete=function(data,evt){
         console.log("drop success, data:", data);
     }
- }
-
+ };
 ```
 
-## Example
-See [`example.html`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example.html).
+## Examples
+[`Drag and drop`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example.html).
+
+[`Re-ordering`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example2.html).
