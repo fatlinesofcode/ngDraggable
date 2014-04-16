@@ -1,6 +1,6 @@
 /*
  *
- * @usage <div ng-draggable=""></div>
+ * https://github.com/fatlinesofcode/ngDraggable
  */
 angular.module("ngDraggable", [])
         .directive('ngDrag', ['$rootScope', '$parse', function ($rootScope, $parse) {
