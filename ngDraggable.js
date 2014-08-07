@@ -8,7 +8,6 @@ angular.module("ngDraggable", [])
                 restrict: 'A',
                 link: function (scope, element, attrs) {
                     scope.value = attrs.ngDrag;
-                 //   console.log("ngDraggable", "link", "", scope.value);
                   //  return;
                     var offset,_mx,_my,_tx,_ty;
                     var _hasTouch = ('ontouchstart' in document.documentElement);
@@ -51,7 +50,6 @@ angular.module("ngDraggable", [])
                     };
                     var onDragDataChange = function (newVal, oldVal) {
                         _data = newVal;
-                     //   console.log("69","onDragDataChange","data", _data);
                     }
                     var onEnableChange = function (newVal, oldVal) {
                         _dragEnabled=scope.$eval(newVal);
@@ -240,7 +238,6 @@ angular.module("ngDraggable", [])
                         img = $(element.find('img'));
                         element.attr('draggable', 'false');
                         img.attr('draggable', 'false');
-                        log("243","initialize","img", img);
                         reset();
                         toggleListeners(true);
                     };
@@ -266,11 +263,10 @@ angular.module("ngDraggable", [])
                     var onDragStart = function(evt, obj) {
                         scope.$apply(function(){
                             scope.clonedData = obj.data;
-                         //   preventContextMenu();
                         });
-                        log("259","onDragStart","onDragStart", obj.element.width());
-                        element.width(obj.element.width())
-                        element.height(obj.element.height())
+                        element.css('width', obj.element.height());
+                        element.css('height', obj.element.height());
+
                         moveElement(obj.tx,obj.ty);
                     }
                     var onDragMove = function(evt, obj) {
