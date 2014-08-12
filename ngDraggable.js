@@ -41,9 +41,9 @@ angular.module("ngDraggable", [])
                         attrs.$observe("ngDrag", onEnableChange);
                         scope.$watch(attrs.ngDragData, onDragDataChange);
                         element.on(_pressEvents, onpress);
-                        if(! _hasTouch){
-                            element.on('mousedown', function(){ return false;}); // prevent native drag
-                        }
+                        //if(! _hasTouch){
+                        //    element.on('mousedown', function(){ return false;}); // prevent native drag
+                        //}
                     };
                     var onDestroy = function (enable) {
                         toggleListeners(false);
