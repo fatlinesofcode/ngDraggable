@@ -8,8 +8,10 @@ angular.module("ngDraggable", [])
                 restrict: 'A',
                 link: function (scope, element, attrs) {
                     scope.value = attrs.ngDrag;
+
+                    console.log(typeof scope.value)
                   //  return;
-                    var offset,_mx,_my,_tx,_ty,_mrx,_mry;
+                    var offset,_centerAnchor,_mx,_my,_tx,_ty,_mrx,_mry;
                     var _hasTouch = ('ontouchstart' in document.documentElement);
                     var _pressEvents = 'touchstart mousedown';
                     var _moveEvents = 'touchmove mousemove';
@@ -21,17 +23,14 @@ angular.module("ngDraggable", [])
 
                     var _dragEnabled = false;
 
-                    var _pressTimer=null;
+                    var _pressTimer = null;
 
                     var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
-
-                    var _centerCursor = attrs.ngCenterCursor || 'true'; 
 
                     var initialize = function () {
                         element.attr('draggable', 'false'); // prevent native drag
                         toggleListeners(true);
                     };
-
 
                     var toggleListeners = function (enable) {
                         // remove listeners
@@ -41,6 +40,7 @@ angular.module("ngDraggable", [])
 
                         scope.$on('$destroy', onDestroy);
                         attrs.$observe("ngDrag", onEnableChange);
+                        attrs.$observe('ngCenterAnchor', onCenterAnchor)
                         scope.$watch(attrs.ngDragData, onDragDataChange);
                         element.on(_pressEvents, onpress);
                         if(! _hasTouch){
@@ -52,10 +52,12 @@ angular.module("ngDraggable", [])
                     };
                     var onDragDataChange = function (newVal, oldVal) {
                         _data = newVal;
-                    }
+                    };
                     var onEnableChange = function (newVal, oldVal) {
-                        _dragEnabled=scope.$eval(newVal);
-
+                        _dragEnabled = scope.$eval(newVal);
+                    };
+                    var onCenterAnchor = function (newVal, oldVal) {
+                        _centerAnchor = scope.$eval(newVal || 'true'); 
                     }
                     /*
                      * When the element is clicked start the drag behaviour
@@ -95,9 +97,9 @@ angular.module("ngDraggable", [])
                         _mrx = _mx - offset.left; 
                         _mry = _my - offset.top;
 
-                        if (_centerCursor === 'true') {
+                        if (_centerAnchor) {
                             _tx = _mx - element.centerX-$window.scrollLeft()
-                            _ty =  _my - element.centerY-$window.scrollTop();    
+                            _ty = _my - element.centerY-$window.scrollTop();    
                         } else {
                             _tx = offset.left;
                             _ty = offset.top;
@@ -116,8 +118,8 @@ angular.module("ngDraggable", [])
                         _mx = (evt.pageX || evt.originalEvent.touches[0].pageX);
                         _my = (evt.pageY || evt.originalEvent.touches[0].pageY);
 
-                         if (_centerCursor === 'true') {
-                            _tx = _mx - element.centerX-$window.scrollLeft()
+                         if (_centerAnchor) {
+                            _tx = _mx - element.centerX-$window.scrollLeft();
                             _ty = _my - element.centerY-$window.scrollTop();
                         } else {
                             _tx = _mx - _mrx;
