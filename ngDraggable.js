@@ -8,8 +8,6 @@ angular.module("ngDraggable", [])
                 restrict: 'A',
                 link: function (scope, element, attrs) {
                     scope.value = attrs.ngDrag;
-
-                    console.log(typeof scope.value)
                   //  return;
                     var offset,_centerAnchor,_mx,_my,_tx,_ty,_mrx,_mry;
                     var _hasTouch = ('ontouchstart' in document.documentElement);
@@ -40,7 +38,7 @@ angular.module("ngDraggable", [])
 
                         scope.$on('$destroy', onDestroy);
                         attrs.$observe("ngDrag", onEnableChange);
-                        attrs.$observe('ngCenterAnchor', onCenterAnchor)
+                        attrs.$observe('ngCenterAnchor', onCenterAnchor);
                         scope.$watch(attrs.ngDragData, onDragDataChange);
                         element.on(_pressEvents, onpress);
                         if(! _hasTouch){
@@ -153,7 +151,7 @@ angular.module("ngDraggable", [])
                         element.css({left:'',top:'', position:'', 'z-index':'', margin: ''});
                     }
                     var moveElement = function(x,y) {
-                        element.css({left:x,top:y, position:'absolute', 'z-index':99999, margin: '0'});
+                        element.css({left:x,top:y, position:'fixed', 'z-index':99999, margin: '0'});
                     }
                     initialize();
                 }
