@@ -9,10 +9,11 @@ Drag and drop module for Angular JS with support for touch devices. [`demo`](htt
 
 Draggable usage:
 ```html
-<div ng-drag="true" ng-drag-data="{obj}" ng-drag-success="onDragComplete($data,$event)" >
+<div ng-drag="true" ng-drag-data="{obj}" ng-drag-success="onDragComplete($data,$event)" ng-center-anchor="true">
   Draggable div
 </div>
 ```
+Note: ng-center-anchor is optional. If not specificed, it defaults to true.
 
 Drop area usage:
 ```html
