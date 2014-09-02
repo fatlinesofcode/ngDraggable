@@ -24,6 +24,8 @@ angular.module("ngDraggable", [])
                     var _pressTimer=null;
 
                     var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
+                    var onDragBeginCallback = $parse(attrs.ngDragBegin)  || null; // || function(){};
+                    var onDragStopMoveCallback = $parse(attrs.ngDragStopMove)  || null; // || function(){};
 
                     var initialize = function () {
                         element.attr('draggable', 'false'); // prevent native drag
@@ -50,11 +52,13 @@ angular.module("ngDraggable", [])
                     };
                     var onDragDataChange = function (newVal, oldVal) {
                         _data = newVal;
-                    }
+                    };
+
                     var onEnableChange = function (newVal, oldVal) {
                         _dragEnabled=scope.$eval(newVal);
 
-                    }
+                    };
+
                     /*
                      * When the element is clicked start the drag behaviour
                      * On touch devices as a small delay so as not to prevent native window scrolling
@@ -62,6 +66,10 @@ angular.module("ngDraggable", [])
                     var onpress = function(evt) {
                         if(! _dragEnabled)return;
 
+
+                        scope.$apply(function () {
+                            onDragBeginCallback(scope, {$data: _data, $event: evt});
+                        });
 
                         if(_hasTouch){
                             cancelPress();
@@ -75,12 +83,14 @@ angular.module("ngDraggable", [])
                             onlongpress(evt);
                         }
 
-                    }
+                    };
+
                     var cancelPress = function() {
                         clearTimeout(_pressTimer);
                         $document.off(_moveEvents, cancelPress);
                         $document.off(_releaseEvents, cancelPress);
-                    }
+                    };
+
                     var onlongpress = function(evt) {
                         if(! _dragEnabled)return;
                         evt.preventDefault();
@@ -97,7 +107,8 @@ angular.module("ngDraggable", [])
                         $document.on(_releaseEvents, onrelease);
                         $rootScope.$broadcast('draggable:start', {x:_mx, y:_my, tx:_tx, ty:_ty, element:element, data:_data});
 
-                    }
+                    };
+
                     var onmove = function(evt) {
                         if(! _dragEnabled)return;
                         evt.preventDefault();
@@ -109,8 +120,8 @@ angular.module("ngDraggable", [])
                         moveElement(_tx, _ty);
 
                         $rootScope.$broadcast('draggable:move', {x:_mx, y:_my, tx:_tx, ty:_ty, element:element, data:_data});
+                    };
 
-                    }
                     var onrelease = function(evt) {
                         if(! _dragEnabled)return;
                         evt.preventDefault();
@@ -120,7 +131,11 @@ angular.module("ngDraggable", [])
                         $document.off(_moveEvents, onmove);
                         $document.off(_releaseEvents, onrelease);
 
-                    }
+                        scope.$apply(function () {
+                            onDragStopMoveCallback(scope, {$data: _data, $event: evt});
+                        });
+                    };
+
                     var onDragComplete = function(evt) {
 
                         if(! onDragSuccessCallback)return;
@@ -128,13 +143,17 @@ angular.module("ngDraggable", [])
                         scope.$apply(function () {
                             onDragSuccessCallback(scope, {$data: _data, $event: evt});
                         });
-                    }
+
+                    };
+
                     var reset = function() {
                         element.css({left:'',top:'', position:'', 'z-index':''});
-                    }
+                    };
+
                     var moveElement = function(x,y) {
                         element.css({left:x,top:y, position:'fixed', 'z-index':99999});
-                    }
+                    };
+
                     initialize();
                 }
             }
