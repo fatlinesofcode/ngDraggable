@@ -39,6 +39,9 @@ angular.module("ngDraggable", [])
 
                         scope.$on('$destroy', onDestroy);
                         attrs.$observe("ngDrag", onEnableChange);
+						scope.$watch(attrs.ngDrag, function(newValue, oldValue, scope) {
+							_dragEnabled=scope.$eval(attrs.ngDrag);
+						});
                         scope.$watch(attrs.ngDragData, onDragDataChange);
                         element.on(_pressEvents, onpress);
                         if(! _hasTouch){
@@ -159,6 +162,9 @@ angular.module("ngDraggable", [])
                         if (!enable)return;
                         // add listeners.
                         attrs.$observe("ngDrop", onEnableChange);
+						scope.$watch(attrs.ngDrop, function(newValue, oldValue, scope) {
+							_dragEnabled=scope.$eval(attrs.ngDrag);
+						});
                         scope.$on('$destroy', onDestroy);
                         //scope.$watch(attrs.uiDraggable, onDraggableChange);
                         scope.$on('draggable:start', onDragStart);
