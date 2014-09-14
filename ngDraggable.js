@@ -82,7 +82,7 @@ angular.module("ngDraggable", [])
                         $document.off(_releaseEvents, cancelPress);
                     }
                     var onlongpress = function(evt) {
-                        if(evt.which !== 1)return;
+                        if(evt.which !== 1 && evt.which !== 0)return;
                         if(! _dragEnabled)return;
                         evt.preventDefault();
                         offset = element.offset();
