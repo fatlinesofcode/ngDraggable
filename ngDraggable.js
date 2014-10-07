@@ -38,7 +38,7 @@ angular.module("ngDraggable", [])
                         // add listeners.
 
                         scope.$on('$destroy', onDestroy);
-                        attrs.$observe("ngDrag", onEnableChange);
+                        scope.$watch(attrs.ngDrag, onEnableChange);
                         scope.$watch(attrs.ngDragData, onDragDataChange);
                         element.on(_pressEvents, onpress);
                         if(! _hasTouch){
@@ -52,7 +52,7 @@ angular.module("ngDraggable", [])
                         _data = newVal;
                     }
                     var onEnableChange = function (newVal, oldVal) {
-                        _dragEnabled=scope.$eval(newVal);
+                        _dragEnabled=newVal;
 
                     }
                     /*
@@ -158,7 +158,7 @@ angular.module("ngDraggable", [])
 
                         if (!enable)return;
                         // add listeners.
-                        attrs.$observe("ngDrop", onEnableChange);
+                        scope.$watch(attrs.ngDrop, onEnableChange);
                         scope.$on('$destroy', onDestroy);
                         //scope.$watch(attrs.uiDraggable, onDraggableChange);
                         scope.$on('draggable:start', onDragStart);
@@ -169,7 +169,7 @@ angular.module("ngDraggable", [])
                         toggleListeners(false);
                     };
                     var onEnableChange = function (newVal, oldVal) {
-                        _dropEnabled=scope.$eval(newVal);
+                        _dropEnabled=newVal;
                     }
                     var onDragStart = function(evt, obj) {
                         if(! _dropEnabled)return;
