@@ -84,11 +84,13 @@
     </div>
 
 
-      <div class="drag-object" ng-repeat="obj in draggableObjects" >
+      <div class="drag-object" ng-repeat="obj in draggableObjects" ng-if="obj.allowClone !== false">
           {{obj.name}}
           <div ng-drag="true" ng-drag-data="obj"></div>
       </div>
-
+      <div class="drag-object"  style="background-color: transparent">
+          <div ng-drag="true" class="drag-object" ng-drag-data="draggableObjects[3]">{{draggableObjects[3].name}}</div>
+      </div>
       <hr/>
       <div ng-drop="true" ng-drop-success="onDropComplete1($data,$event)">
           <span class="title">Drop area #1</span>
@@ -123,7 +125,7 @@
   <script>
     angular.module('ExampleApp', ['ngDraggable']).
       controller('MainCtrl', function ($scope) {
-        $scope.draggableObjects = [{name:'one'}, {name:'two'}, {name:'three'}];
+        $scope.draggableObjects = [{name:'one'}, {name:'two'}, {name:'three'}, {name:'no-clone', allowClone:false}];
         $scope.droppedObjects1 = [];
         $scope.droppedObjects2= [];
         $scope.onDropComplete1=function(data,evt){

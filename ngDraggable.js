@@ -253,7 +253,7 @@ angular.module("ngDraggable", [])
             return {
                 restrict: 'A',
                 link: function (scope, element, attrs) {
-                    var img;
+                    var img, _allowClone=true;
                     scope.clonedData = {};
                     var initialize = function () {
 
@@ -282,21 +282,31 @@ angular.module("ngDraggable", [])
                       //  element.on('mousedown touchstart touchmove touchend touchcancel', absorbEvent_);
                         img.on('mousedown touchstart touchmove touchend touchcancel', absorbEvent_);
                     }
-                    var onDragStart = function(evt, obj) {
-                        scope.$apply(function(){
-                            scope.clonedData = obj.data;
-                        });
-                        element.css('width', obj.element.width());
-                        element.css('height', obj.element.height());
+                    var onDragStart = function(evt, obj, elm) {
+                        _allowClone=true
+                        if(angular.isDefined(obj.data.allowClone)){
+                            _allowClone=obj.data.allowClone;
+                        }
+                        if(_allowClone) {
+                            scope.$apply(function () {
+                                scope.clonedData = obj.data;
+                            });
+                            element.css('width', obj.element.width());
+                            element.css('height', obj.element.height());
 
-                        moveElement(obj.tx,obj.ty);
+                            moveElement(obj.tx, obj.ty);
+                        }
                     }
                     var onDragMove = function(evt, obj) {
-                        moveElement(obj.tx,obj.ty);
+                        if(_allowClone) {
+                            moveElement(obj.tx, obj.ty);
+                        }
                     }
                     var onDragEnd = function(evt, obj) {
                         //moveElement(obj.tx,obj.ty);
-                        reset();
+                        if(_allowClone) {
+                            reset();
+                        }
                     }
 
                     var reset = function() {
