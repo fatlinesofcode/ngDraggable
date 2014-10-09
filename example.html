@@ -65,13 +65,13 @@
 <body ng-app="ExampleApp">
 
   <div class="container" ng-controller="MainCtrl">
-    <button ng-click="toggleCenterAnchor()">Click here to toggle the ng-center-anchor attribute. Currently: {{centerAnchor}}</button>
+
     <div class="row">
       <h1>ngDraggable Example</h1>
     </div>
 
 
-      <div ng-repeat="obj in draggableObjects" ng-drag="true" ng-drag-data="obj" ng-center-anchor="{{centerAnchor}}">
+      <div ng-repeat="obj in draggableObjects" ng-drag="true" ng-drag-data="obj" >
           {{obj.name}}
       </div>
 

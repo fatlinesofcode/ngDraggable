@@ -9,7 +9,7 @@ angular.module("ngDraggable", [])
                 link: function (scope, element, attrs) {
                     scope.value = attrs.ngDrag;
                   //  return;
-                    var offset,_centerAnchor,_mx,_my,_tx,_ty,_mrx,_mry;
+                    var offset,_centerAnchor=false,_mx,_my,_tx,_ty,_mrx,_mry;
                     var _hasTouch = ('ontouchstart' in document.documentElement);
                     var _pressEvents = 'touchstart mousedown';
                     var _moveEvents = 'touchmove mousemove';
@@ -37,8 +37,10 @@ angular.module("ngDraggable", [])
                         // add listeners.
 
                         scope.$on('$destroy', onDestroy);
-                        attrs.$observe("ngDrag", onEnableChange);
-                        attrs.$observe('ngCenterAnchor', onCenterAnchor);
+                        //attrs.$observe("ngDrag", onEnableChange);
+                        scope.$watch(attrs.ngDrag, onEnableChange);
+                        //attrs.$observe('ngCenterAnchor', onCenterAnchor);
+                        scope.$watch(attrs.ngCenterAnchor, onCenterAnchor);
                         scope.$watch(attrs.ngDragData, onDragDataChange);
                         element.on(_pressEvents, onpress);
                         if(! _hasTouch){
@@ -52,10 +54,12 @@ angular.module("ngDraggable", [])
                         _data = newVal;
                     };
                     var onEnableChange = function (newVal, oldVal) {
-                        _dragEnabled = scope.$eval(newVal);
+                        _dragEnabled = (newVal);
                     };
                     var onCenterAnchor = function (newVal, oldVal) {
-                        _centerAnchor = scope.$eval(newVal || 'true'); 
+                        console.log("58","onCenterAnchor","onCenterAnchor", newVal);
+                        if(angular.isDefined(newVal))
+                        _centerAnchor = (newVal || 'true');
                     }
                     /*
                      * When the element is clicked start the drag behaviour
