@@ -26,6 +26,17 @@
         margin:0 10px;
         cursor: move;
     }
+    ul.draggable-objects:after{
+        display: block;
+        content:"";
+        clear:both;
+    }
+    .draggable-objects li{
+        float:left;
+        display: block;
+        width: 120px;
+        height:100px;
+    }
     [ng-drag].drag-over{
         border:solid 1px red;
     }
@@ -70,10 +81,11 @@
       <h1>ngDraggable Example</h1>
     </div>
 
-
-      <div ng-repeat="obj in draggableObjects" ng-drag="true" ng-drag-data="obj" >
-          {{obj.name}}
-      </div>
+        <ul class="draggable-objects">
+            <li  ng-repeat="obj in draggableObjects" >
+                <div ng-drag="true" ng-drag-data="obj"> {{obj.name}} </div>
+            </li>
+        </ul>
 
       <hr/>
       <div ng-drop="true" ng-drop-success="onDropComplete1($data,$event)">

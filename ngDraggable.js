@@ -284,7 +284,7 @@ angular.module("ngDraggable", [])
                     }
                     var onDragStart = function(evt, obj) {
                         scope.$apply(function(){
-                            scope.clonedData = obj.data; 
+                            scope.clonedData = obj.data;
                         });
                         element.css('width', obj.element.width());
                         element.css('height', obj.element.height());
