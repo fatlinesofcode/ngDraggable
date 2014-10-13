@@ -57,7 +57,6 @@ angular.module("ngDraggable", [])
                         _dragEnabled = (newVal);
                     };
                     var onCenterAnchor = function (newVal, oldVal) {
-                        console.log("58","onCenterAnchor","onCenterAnchor", newVal);
                         if(angular.isDefined(newVal))
                         _centerAnchor = (newVal || 'true');
                     }
@@ -110,7 +109,7 @@ angular.module("ngDraggable", [])
                         moveElement(_tx, _ty);
                         $document.on(_moveEvents, onmove);
                         $document.on(_releaseEvents, onrelease);
-                        $rootScope.$broadcast('draggable:start', {x:_mx, y:_my, tx:_tx, ty:_ty, element:element, data:_data});
+                        $rootScope.$broadcast('draggable:start', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data});
 
                     }
                     var onmove = function(evt) {
@@ -130,13 +129,13 @@ angular.module("ngDraggable", [])
 
                         moveElement(_tx, _ty);
 
-                        $rootScope.$broadcast('draggable:move', {x:_mx, y:_my, tx:_tx, ty:_ty, element:element, data:_data});
+                        $rootScope.$broadcast('draggable:move', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data});
 
                     }
                     var onrelease = function(evt) {
                         if(! _dragEnabled)return;
                         evt.preventDefault();
-                        $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, element:element, data:_data, callback:onDragComplete});
+                        $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data, callback:onDragComplete});
                         element.removeClass('dragging');
                         reset();
                         $document.off(_moveEvents, onmove);
@@ -144,7 +143,6 @@ angular.module("ngDraggable", [])
 
                     }
                     var onDragComplete = function(evt) {
-
                         if(! onDragSuccessCallback)return;
 
                         scope.$apply(function () {
@@ -204,9 +202,9 @@ angular.module("ngDraggable", [])
                     var onDragEnd = function(evt, obj) {
                         if(! _dropEnabled)return;
                         if(isTouching(obj.x,obj.y,obj.element)){
-                            // call the ngDraggable element callback
+                            // call the ngDraggable ngDragSuccess element callback
                            if(obj.callback){
-                                obj.callback(evt);
+                                obj.callback(obj);
                             }
 
                             // call the ngDrop element callback
@@ -214,7 +212,7 @@ angular.module("ngDraggable", [])
                          //       onDropCallback(scope, {$data: obj.data, $event: evt});
                          //   });
                             $timeout(function(){
-                                onDropCallback(scope, {$data: obj.data, $event: evt});
+                                onDropCallback(scope, {$data: obj.data, $event: obj});
                             });
 
 
