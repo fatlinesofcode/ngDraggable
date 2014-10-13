@@ -3,9 +3,25 @@ ngDraggable
 
 Drag and drop module for Angular JS with support for touch devices. [`demo`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example.html).
 
-## Usage
-1. Include the `ngDraggable.js` script provided by this component into your app.
-2. Add `ngDraggable` as a module dependency to your app.
+### Usage:
+
+- Install: `bower install ngDraggable`
+- Add `jquery`, `angular` and `ngDraggable` to your code:
+
+```html
+<script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+<script src="ngDraggable.js"></script>
+```
+
+- Add a dependency to the `ngDraggable` module in your application.
+
+```js
+angular.module('app', ['ngDraggable']);
+```
+
+- Add attribute directives to your html:
+
 
 Draggable usage:
 ```html
@@ -13,7 +29,7 @@ Draggable usage:
   Draggable div
 </div>
 ```
-Note: ng-center-anchor is optional. If not specificed, it defaults to true.
+Note: ng-center-anchor is optional. If not specified, it defaults to false.
 
 Drop area usage:
 ```html
