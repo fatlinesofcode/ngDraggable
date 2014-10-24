@@ -29,6 +29,8 @@ Draggable usage:
 </div>
 ```
 Note: ng-center-anchor is optional. If not specified, it defaults to false.
+```ng-drag-start``` and ```ng-drag-move``` is also available.
+
 
 Drop area usage:
 ```html
