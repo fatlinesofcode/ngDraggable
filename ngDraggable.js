@@ -43,8 +43,8 @@ angular.module("ngDraggable", [])
                         scope.$watch(attrs.ngCenterAnchor, onCenterAnchor);
                         scope.$watch(attrs.ngDragData, onDragDataChange);
                         element.on(_pressEvents, onpress);
-                        if(! _hasTouch){
-                            element.on('mousedown', function(){ return false;}); // prevent native drag
+                        if(! _hasTouch && element[0].nodeName.toLowerCase() == "img"){
+                            element.on('mousedown', function(){ return false;}); // prevent native drag for images
                         }
                     };
                     var onDestroy = function (enable) {
@@ -65,6 +65,7 @@ angular.module("ngDraggable", [])
                         return (
                                 angular.isDefined($(evt.target).attr("ng-click"))
                                 || angular.isDefined($(evt.target).attr("ng-dblclick"))
+                                || angular.isDefined($(evt.target).attr("ng-cancel-drag"))
                                 );
                     }
                     /*
@@ -76,7 +77,7 @@ angular.module("ngDraggable", [])
 
                         // disable drag and drop on clickable element
                         if (isClickableElement(evt)) {
-                            return false;
+                            return;
                         }
 
                         if(_hasTouch){
