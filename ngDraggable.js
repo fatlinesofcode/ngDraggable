@@ -109,6 +109,7 @@ angular.module("ngDraggable", [])
                         moveElement(_tx, _ty);
                         $document.on(_moveEvents, onmove);
                         $document.on(_releaseEvents, onrelease);
+                        console.log('Pressed Element: ',element);
                         $rootScope.$broadcast('draggable:start', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data});
 
                     };
@@ -166,7 +167,6 @@ angular.module("ngDraggable", [])
                     scope.value = attrs.ngDrop;
 
                     var parseRestriction = function(value){
-                    	console.log(value);
                     	if(typeof(value) == 'string'){
                     		return value.split(/\s*\,+\s*/);;
                     	} else {
@@ -177,9 +177,9 @@ angular.module("ngDraggable", [])
                     var _dropEnabled=false;
                     
                     var _dropElementRestriction = parseRestriction(attrs.ngDropElementRestriction);
+                    console.log("Parsed restrictions: ", _dropElementRestriction);
 
                     var onDropCallback = $parse(attrs.ngDropSuccess);// || function(){};
-                    
                     var initialize = function () {
                         toggleListeners(true);
                     };
@@ -191,13 +191,12 @@ angular.module("ngDraggable", [])
                         if (!enable)return;
                         // add listeners.
                         attrs.$observe("ngDrop", onEnableChange);
-                        attrs.$observe("ngDropElementRestriction", onElementRestrictionChange);
+                        //attrs.$observe("ngDropElementRestriction", onElementRestrictionChange);
                         scope.$on('$destroy', onDestroy);
                         //scope.$watch(attrs.uiDraggable, onDraggableChange);
                         scope.$on('draggable:start', onDragStart);
                         scope.$on('draggable:move', onDragMove);
                         scope.$on('draggable:end', onDragEnd);
-                        
                     };
                     var onDestroy = function (enable) {
                         toggleListeners(false);
@@ -225,45 +224,39 @@ angular.module("ngDraggable", [])
                          //   scope.$apply(function () {
                          //       onDropCallback(scope, {$data: obj.data, $event: evt});
                          //   });
-                            $timeout(function(){
-                            	console.log(_dropElementRestriction);
-                            	if(_dropElementRestriction.length>0){
-                            		var test = false;
-                            		var ob = $(obj.element);
-                            		console.log(ob, ob.hasClass( "allowedToDrop" ));
-                            		for(var i=0; i<_dropElementRestriction.length; ++i){
-                            			console.log(_dropElementRestriction[i]);
-                            			if( ob.hasClass( _dropElementRestriction[i] ) ){
-                            				console.log(test);
-                            				test = true;
-                            				break;
-                            			}
-                            		}
-                            		if(!test){
-                            			console.log("ERR");
-                            			return;
-                            		} else {
-                            			console.log("OK");
-                            			
-                            		}
-                            	}
-                            	
-                            	console.log("_dropElementRestriction: ", _dropElementRestriction);
-                            	console.log("element: ", obj.element);
-                            	
-                            	onDropCallback(scope, {$data: obj.data, $event: obj});
+                        $timeout(function() {
+                            if (_dropElementRestriction.length > 0) {
+                                    console.log("element: ", element);
+                                    console.log(element.attr('class'));
+                                    var test = false;
+                                    for (var i = 0; i < _dropElementRestriction.length; ++i) {
+                                        console.log(_dropElementRestriction[i]);
+                                        if (obj.element.hasClass(_dropElementRestriction[i])) {
+                                            test = true;
+                                            break;
+                                        }
+                                    }
+                                    if (!test) {
+                                        console.log("RESTRICT!");
+                                        return;
+                                    } else {
+                                        console.log("OK");
+                                    }
+                                }
+                            
+                                onDropCallback(scope, {
+                                    $data : obj.data,
+                                    $event : obj
+                                });
                             });
-
-
                         }
                         updateDragStyles(false, obj.element);
                     };
                     
-                    var onElementRestrictionChange = function(newVal, oldVal) {
-                    	console.log("WWW");
-                    	console.log(newVal, oldVal);
-                        	_dropElementRestriction = parseRestriction(newVal);
-                    };
+//                    var onElementRestrictionChange = function(newVal, oldVal) {
+//                    	console.log(newVal, oldVal);
+//                        	_dropElementRestriction = parseRestriction(newVal);
+//                    };
                     
                     var isTouching = function(mouseX, mouseY, dragElement) {
                         var touching= hitTest(mouseX, mouseY);
@@ -299,6 +292,7 @@ angular.module("ngDraggable", [])
                 link: function (scope, element, attrs) {
                     var img, _allowClone=true;
                     scope.clonedData = {};
+                    scope.dragOwnClasses = [];
                     var initialize = function () {
 
                         img = $(element.find('img'));
@@ -326,7 +320,10 @@ angular.module("ngDraggable", [])
                       //  element.on('mousedown touchstart touchmove touchend touchcancel', absorbEvent_);
                         img.on('mousedown touchstart touchmove touchend touchcancel', absorbEvent_);
                     }
-                    var onDragStart = function(evt, obj, elm) {
+                    var onDragStart = function(evt, obj) {
+                        console.log("Clon Drag Start: ", evt, obj);
+                        console.log("Clon Drag Start obj.element: ", obj.element);
+                        
                         _allowClone=true
                         if(angular.isDefined(obj.data.allowClone)){
                             _allowClone=obj.data.allowClone;
@@ -337,6 +334,17 @@ angular.module("ngDraggable", [])
                             });
                             element.css('width', obj.element.width());
                             element.css('height', obj.element.height());
+                            
+                            var dragClasses = obj.element.attr('class');
+                            if(dragClasses){
+                                console.log("Jest co sprawdzać: ", dragClasses);
+                                var classes = dragClasses.split(/\s+/);
+                                scope.dragOwnClasses = [];
+                                $.each(classes, addDraggedObjectClass);
+                            }
+                            
+                            console.log("scope.dragOwnClasses: ", scope.dragOwnClasses);
+                            console.log("element: ", element);
 
                             moveElement(obj.tx, obj.ty);
                         }
@@ -355,6 +363,8 @@ angular.module("ngDraggable", [])
 
                     var reset = function() {
                         element.css({left:0,top:0, position:'fixed', 'z-index':-1, visibility:'hidden'});
+                        $.each(scope.dragOwnClasses, removeDraggedObjectClass);
+                        scope.dragOwnClasses = [];
                     }
                     var moveElement = function(x,y) {
                         element.css({left:x,top:y, position:'fixed', 'z-index':99999, visibility:'visible'});
@@ -369,6 +379,21 @@ angular.module("ngDraggable", [])
                         return false;
                     }
 
+                    /* Check which css classes are not present in clone element. Store it in array and add to clone element.
+                    @param classesList: array, list of classes
+                    */
+                    var addDraggedObjectClass = function(index, item){
+                        console.log("Dodaje: ", index, item);
+                        if(!element.hasClass(item)){
+                            scope.dragOwnClasses.push(item);
+                        }
+                    } 
+                    
+                    var removeDraggedObjectClass = function(index, item){
+                        console.log("Usuwam: ", index, item);
+                        element.removeClass(item);
+                    } 
+                    
                     initialize();
                 }
             }
@@ -378,7 +403,6 @@ angular.module("ngDraggable", [])
                 restrict: 'A',
                 link: function (scope, element, attrs) {
                     var initialize = function () {
-
                         element.attr('draggable', 'false');
                         toggleListeners(true);
                     };

@@ -94,7 +94,7 @@
         </ul>
 
       <hr/>
-      <div id="dr1" ng-drop="true" ng-drop-success="onDropComplete1($data,$event)" ng-drop-element-restriction="allowedToDrop">
+      <div id="dr1" ng-drop="true" ng-drop-success="onDropComplete1($data,$event)" ng-drop-element-restriction="allowedToDrop   ,  anotherToDrop">
           <span class="title">Drop area #1</span>
 
           <div ng-repeat="obj in droppedObjects1" ng-drag="true" ng-drag-data="obj" ng-drag-success="onDragSuccess1($data,$event)" ng-center-anchor="{{centerAnchor}}">
@@ -157,11 +157,7 @@
             }
         };
         
-        $scope.test = function(){
-        	$("#dr1").attr("ng-drop-element-restriction", "anotherToDrop");	
-        	$(".nieDropowalne").attr("ng-drag", "false");	
-        };
-        var inArray = function(array, obj) {
+                var inArray = function(array, obj) {
             var index = array.indexOf(obj);
         }
       });
