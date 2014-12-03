@@ -60,6 +60,13 @@ angular.module("ngDraggable", [])
                         if(angular.isDefined(newVal))
                         _centerAnchor = (newVal || 'true');
                     }
+                    
+                    var isClickableElement = function (evt) {
+                        return (
+                                angular.isDefined($(evt.target).attr("ng-click"))
+                                || angular.isDefined($(evt.target).attr("ng-dblclick"))
+                                );
+                    }
                     /*
                      * When the element is clicked start the drag behaviour
                      * On touch devices as a small delay so as not to prevent native window scrolling
@@ -67,6 +74,10 @@ angular.module("ngDraggable", [])
                     var onpress = function(evt) {
                         if(! _dragEnabled)return;
 
+                        // disable drag and drop on clickable element
+                        if (isClickableElement(evt)) {
+                            return false;
+                        }
 
                         if(_hasTouch){
                             cancelPress();
