@@ -86,7 +86,10 @@
         <ul class="draggable-objects">
             <li  ng-repeat="obj in draggableObjects" >
                 <div ng-drag="true" ng-drag-data="obj"> {{obj.name}}
-                    <select ng-cancel-drag=""><option>No drag</option><option>No drag</option><option>No drag</option><option>No drag</option></select>
+                    <select ng-cancel-drag>
+                        <option>No drag</option>
+                        <option>No drag</option>
+                    </select>
                 </div>
             </li>
         </ul>
