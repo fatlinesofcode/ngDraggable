@@ -11,6 +11,7 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "latest"
+    "jquery": "latest",
+    "angular": "latest"
   }
 }
