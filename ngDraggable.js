@@ -128,8 +128,8 @@ angular.module("ngDraggable", [])
                         if(! _dragEnabled)return;
                         evt.preventDefault();
 
-                        _mx = (evt.pageX || evt.originalEvent.touches[0].pageX);
-                        _my = (evt.pageY || evt.originalEvent.touches[0].pageY);
+                        _mx = (evt.pageX || evt.pageX === 0 || evt.originalEvent.touches[0].pageX);
+                        _my = (evt.pageY || evt.pageY === 0 || evt.originalEvent.touches[0].pageY);
 
                          if (_centerAnchor) {
                             _tx = _mx - element.centerX - $window.scrollLeft();
