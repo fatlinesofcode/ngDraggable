@@ -14,6 +14,7 @@ angular.module("ngDraggable", [])
                     var _pressEvents = 'touchstart mousedown';
                     var _moveEvents = 'touchmove mousemove';
                     var _releaseEvents = 'touchend mouseup';
+                    var _dragHandle;
 
                     var $document = $(document);
                     var $window = $(window);
@@ -27,6 +28,11 @@ angular.module("ngDraggable", [])
 
                     var initialize = function () {
                         element.attr('draggable', 'false'); // prevent native drag
+                        // check to see if drag handle(s) was specified
+                        var dragHandles = element.find('[ng-drag-handle]');
+                        if (dragHandles.length) {
+                            _dragHandle = dragHandles;
+                        }
                         toggleListeners(true);
                     };
 
@@ -42,7 +48,14 @@ angular.module("ngDraggable", [])
                         //attrs.$observe('ngCenterAnchor', onCenterAnchor);
                         scope.$watch(attrs.ngCenterAnchor, onCenterAnchor);
                         scope.$watch(attrs.ngDragData, onDragDataChange);
-                        element.on(_pressEvents, onpress);
+                        // wire up touch events
+                        if (_dragHandle) {
+                            // handle(s) specified, use those to initiate drag
+                            _dragHandle.on(_pressEvents, onpress);
+                        } else {
+                            // no handle(s) specified, use the element as the handle
+                            element.on(_pressEvents, onpress);    
+                        }
                         if(! _hasTouch && element[0].nodeName.toLowerCase() == "img"){
                             element.on('mousedown', function(){ return false;}); // prevent native drag for images
                         }
@@ -224,7 +237,7 @@ angular.module("ngDraggable", [])
                          //       onDropCallback(scope, {$data: obj.data, $event: evt});
                          //   });
                             $timeout(function(){
-                                onDropCallback(scope, {$data: obj.data, $event: obj});
+                                onDropCallback(scope, {$data: obj.data, $event: obj, $target: scope.$eval(scope.value)});
                             });
 
 
