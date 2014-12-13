@@ -15,8 +15,8 @@ angular.module("ngDraggable", [])
                     var _moveEvents = 'touchmove mousemove';
                     var _releaseEvents = 'touchend mouseup';
 
-                    var $document = $(document);
-                    var $window = $(window);
+                    var $document = angular.element(document);
+                    var $window = angular.element(window);
                     var _data = null;
 
                     var _dragEnabled = false;
@@ -63,9 +63,9 @@ angular.module("ngDraggable", [])
                     
                     var isClickableElement = function (evt) {
                         return (
-                                angular.isDefined($(evt.target).attr("ng-click"))
-                                || angular.isDefined($(evt.target).attr("ng-dblclick"))
-                                || angular.isDefined($(evt.target).attr("ng-cancel-drag"))
+                                angular.isDefined(angular.element(evt.target).attr("ng-click"))
+                                || angular.isDefined(angular.element(evt.target).attr("ng-dblclick"))
+                                || angular.isDefined(angular.element(evt.target).attr("ng-cancel-drag"))
                                 );
                     }
                     /*
@@ -267,7 +267,7 @@ angular.module("ngDraggable", [])
                     scope.clonedData = {};
                     var initialize = function () {
 
-                        img = $(element.find('img'));
+                        img = angular.element(element.find('img'));
                         element.attr('draggable', 'false');
                         img.attr('draggable', 'false');
                         reset();
