@@ -14,6 +14,7 @@ angular.module("ngDraggable", [])
                     var _pressEvents = 'touchstart mousedown';
                     var _moveEvents = 'touchmove mousemove';
                     var _releaseEvents = 'touchend mouseup';
+                    var ngDragDisableReset = !!attrs.ngDragDisableReset;
 
                     var $document = $(document);
                     var $window = $(window);
@@ -149,7 +150,9 @@ angular.module("ngDraggable", [])
                         evt.preventDefault();
                         $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data, callback:onDragComplete});
                         element.removeClass('dragging');
-                        reset();
+                        if (!ngDragDisableReset) {
+                          reset();  
+                        } 
                         $document.off(_moveEvents, onmove);
                         $document.off(_releaseEvents, onrelease);
 
