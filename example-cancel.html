@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>ngDraggable</title>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/2.3.1/spruce/bootstrap.min.css">
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/spruce/bootstrap.min.css">
   <style>
 
     *{
@@ -71,6 +71,10 @@
         position: relative;
         z-index: 2;
     }
+    
+    .draggable-objects [ng-cancel-drag]{
+    	width: 100%;
+    }
 
   </style>
 </head>
@@ -120,8 +124,8 @@
   </div>
   <footer style="margin-top:2000px;">footer</footer>
 
-  <script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+  <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
   <script src="ngDraggable.js"></script>
   <script>
     angular.module('ExampleApp', ['ngDraggable']).

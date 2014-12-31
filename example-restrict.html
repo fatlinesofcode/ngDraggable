@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>ngDraggable</title>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/2.3.1/spruce/bootstrap.min.css">
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/spruce/bootstrap.min.css">
   <style>
 
     *{
@@ -79,17 +79,18 @@
 
     <div class="row">
       <h1>ngDraggable Example</h1>
+      <h2>With restriction to specific class allowed to drop.</h2>
     </div>
 
         <ul class="draggable-objects">
             <li ng-repeat="obj in draggableObjects" >
-                <div class="nieDropowalne" ng-drag="true" ng-drag-data="obj"> {{obj.name}} </div>
+                <div ng-drag="true" ng-drag-data="obj"> {{obj.name}}, <br/> noClass</div>
             </li>
             <li>
-                <div class="allowedToDrop" ng-drag="true" ng-drag-data="{name:'moj'}"> Moj </div>
+                <div class="allowedToDrop" ng-drag="true" ng-drag-data="{name:'four'}"> four, allowDrop</div>
             </li>
             <li>
-                <div class="anotherToDrop" ng-drag="true" ng-drag-data="{name:'inny'}"> inny </div>
+                <div class="anotherToDrop" ng-drag="true" ng-drag-data="{name:'five'}"> five, allowDrop</div>
             </li>
         </ul>
 
@@ -128,7 +129,7 @@
     angular.module('ExampleApp', ['ngDraggable']).
       controller('MainCtrl', function ($scope) {
         $scope.centerAnchor = true;
-        $scope.toggleCenterAnchor = function () {$scope.centerAnchor = !$scope.centerAnchor}
+        $scope.toggleCenterAnchor = function () {$scope.centerAnchor = !$scope.centerAnchor};
         $scope.draggableObjects = [{name:'one'}, {name:'two'}, {name:'three'}];
         $scope.droppedObjects1 = [];
         $scope.droppedObjects2= [];
@@ -136,20 +137,19 @@
             var index = $scope.droppedObjects1.indexOf(data);
             if (index == -1)
             $scope.droppedObjects1.push(data);
-        }
+        };
         $scope.onDragSuccess1=function(data,evt){
-            console.log("133","$scope","onDragSuccess1", "", evt);
             var index = $scope.droppedObjects1.indexOf(data);
             if (index > -1) {
                 $scope.droppedObjects1.splice(index, 1);
             }
-        }
+        };
         $scope.onDragSuccess2=function(data,evt){
             var index = $scope.droppedObjects2.indexOf(data);
             if (index > -1) {
                 $scope.droppedObjects2.splice(index, 1);
             }
-        }
+        };
         $scope.onDropComplete2=function(data,evt){
             var index = $scope.droppedObjects2.indexOf(data);
             if (index == -1) {
@@ -157,9 +157,9 @@
             }
         };
         
-                var inArray = function(array, obj) {
+        var inArray = function(array, obj) {
             var index = array.indexOf(obj);
-        }
+        };
       });
   </script>
 </body>
