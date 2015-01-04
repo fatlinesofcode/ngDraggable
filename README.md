@@ -9,7 +9,7 @@ Drag and drop module for Angular JS with support for touch devices. [`demo`](htt
 - Add `angular` and `ngDraggable` to your code:
 
 ```html
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
 <script src="ngDraggable.js"></script>
 ```
 
