@@ -9,7 +9,7 @@ angular.module("ngDraggable", [])
                 link: function (scope, element, attrs) {
                     scope.value = attrs.ngDrag;
                     var offset,_centerAnchor=false,_mx,_my,_tx,_ty,_mrx,_mry;
-                    var _hasTouch = ('ontouchstart' in document.documentElement);
+                    var _hasTouch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
                     var _pressEvents = 'touchstart mousedown';
                     var _moveEvents = 'touchmove mousemove';
                     var _releaseEvents = 'touchend mouseup';
