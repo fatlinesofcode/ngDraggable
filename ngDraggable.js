@@ -3,7 +3,35 @@
  * https://github.com/fatlinesofcode/ngDraggable
  */
 angular.module("ngDraggable", [])
-        .directive('ngDrag', ['$rootScope', '$parse', '$document', '$window', function ($rootScope, $parse, $document, $window) {
+        .service('ngDraggable', ['$window', function($window) {
+
+            var isDef = function(val) { return typeof val !== 'undefined'; };
+
+            this.getEventProp = function getEventProp(evt, prop, skipOriginal) {
+                if (isDef(evt.touches) && evt.touches[0]) {
+                    return evt.touches[0][prop];
+                }
+                if (isDef(evt[prop])) {
+                    return evt[prop];
+                }
+                if (evt.originalEvent && !skipOriginal) {
+                    return this.getEventProp(evt.originalEvent, prop, true);
+                }
+            };
+
+            this.getPrivOffset = function getPrivOffset(docElem) {
+                var box = { top: 0, left: 0 };
+                if (isDef(docElem[0].getBoundingClientRect)) {
+                    box = docElem[0].getBoundingClientRect();
+                }
+                return {
+                    top: box.top + $window.pageYOffset - docElem[0].clientTop,
+                    left: box.left + $window.pageXOffset - docElem[0].clientLeft
+                };
+            }
+
+        }])
+        .directive('ngDrag', ['$rootScope', '$parse', '$document', '$window', 'ngDraggable', function ($rootScope, $parse, $document, $window, ngDraggable) {
             return {
                 restrict: 'A',
                 link: function (scope, element, attrs) {
@@ -28,19 +56,6 @@ angular.module("ngDraggable", [])
                         element.attr('draggable', 'false'); // prevent native drag
                         toggleListeners(true);
                     };
-                    
-                    // this same func is in ngDrop, it needs to be DRYed up but don't know if its
-                    // worth writing a service (or equivalent) for one function
-                    var _privoffset = function (docElem) {                        
-                        var box = { top: 0, left: 0 };
-                        if (typeof docElem[0].getBoundingClientRect !== undefined) {
-                            box = docElem[0].getBoundingClientRect();
-                        }
-                        return {
-                            top: box.top + $window.pageYOffset - docElem[0].clientTop,
-                            left: box.left + $window.pageXOffset - docElem[0].clientLeft
-                        };
-                    }                    
 
                     var toggleListeners = function (enable) {
                         if (!enable)return;
@@ -110,13 +125,13 @@ angular.module("ngDraggable", [])
                         if(! _dragEnabled)return;
                         evt.preventDefault();
                         element.addClass('dragging');
-                        offset = _privoffset(element); 
+                        offset = ngDraggable.getPrivOffset(element);
 
                         element.centerX = element[0].offsetWidth / 2;
                         element.centerY = element[0].offsetHeight / 2;    
                         
-                        _mx = (evt.pageX || evt.touches[0].pageX);
-                        _my = (evt.pageY || evt.touches[0].pageY);
+                        _mx = ngDraggable.getEventProp(evt, 'pageX');
+                        _my = ngDraggable.getEventProp(evt, 'pageY');
                         _mrx = _mx - offset.left;
                         _mry = _my - offset.top;
                          if (_centerAnchor) {
@@ -136,8 +151,8 @@ angular.module("ngDraggable", [])
                         if (!_dragEnabled)return;
                         evt.preventDefault();
 
-                        _mx = (evt.pageX || evt.touches[0].pageX);
-                        _my = (evt.pageY || evt.touches[0].pageY);
+                        _mx = ngDraggable.getEventProp(evt, 'pageX');
+                        _my = ngDraggable.getEventProp(evt, 'pageY');
 
                          if (_centerAnchor) {
                              _tx = _mx - element.centerX - $window.pageXOffset;
@@ -186,7 +201,7 @@ angular.module("ngDraggable", [])
             }
         }])
 
-        .directive('ngDrop', ['$parse', '$timeout', '$window', function ($parse, $timeout, $window) {
+        .directive('ngDrop', ['$parse', '$timeout', '$window', 'ngDraggable', function ($parse, $timeout, $window, ngDraggable) {
             return {
                 restrict: 'A',
                 link: function (scope, element, attrs) {
@@ -214,19 +229,6 @@ angular.module("ngDraggable", [])
                         scope.$on('draggable:move', onDragMove);
                         scope.$on('draggable:end', onDragEnd);
                     };
-                    
-                    // this same func is in ngDrag, it needs to be DRYed up but don't know if its
-                    // worth writing a service (or equivalent) for one function
-                    var _privoffset = function (docElem) {                        
-                        var box = { top: 0, left: 0 };
-                        if (typeof docElem[0].getBoundingClientRect !== undefined) {
-                            box = docElem[0].getBoundingClientRect();
-                        }
-                        return {
-                            top: box.top + $window.pageYOffset - docElem[0].clientTop,
-                            left: box.left + $window.pageXOffset - docElem[0].clientLeft
-                        };
-                    }                    
 
                     var onDestroy = function (enable) {
                         toggleListeners(false);
@@ -277,7 +279,7 @@ angular.module("ngDraggable", [])
                     }
 
                     var hitTest = function(x, y) {
-                        var bounds = _privoffset(element);
+                        var bounds = ngDraggable.getPrivOffset(element);
                         bounds.right = bounds.left + element[0].offsetWidth;
                         bounds.bottom = bounds.top + element[0].offsetHeight;
                         return  x >= bounds.left
