@@ -110,6 +110,8 @@ angular.module("ngDraggable", [])
                         if(! _dragEnabled)return;
                         evt.preventDefault();
                         element.addClass('dragging');
+                        // fix to preserve element width while dragging 
+                        element.width(element.width());
                         offset = _privoffset(element); 
 
                         element.centerX = element[0].offsetWidth / 2;
