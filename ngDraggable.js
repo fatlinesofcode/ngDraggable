@@ -36,7 +36,9 @@ angular.module("ngDraggable", [])
                 restrict: 'A',
                 link: function (scope, element, attrs) {
                     scope.value = attrs.ngDrag;
+                    var _touchDelay = function(){ if(attrs.ngTouchDelay){ return parseInt(attrs.ngTouchDelay);} else{ return 100;}}; _touchDelay();
                     var offset,_centerAnchor=false,_mx,_my,_tx,_ty,_mrx,_mry;
+                    var _scrollAnchor = false, _forceTouch = false; 
                     var _hasTouch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
                     var _pressEvents = 'touchstart mousedown';
                     var _moveEvents = 'touchmove mousemove';
@@ -64,6 +66,8 @@ angular.module("ngDraggable", [])
                         scope.$on('$destroy', onDestroy);                       
                         scope.$watch(attrs.ngDrag, onEnableChange);                     
                         scope.$watch(attrs.ngCenterAnchor, onCenterAnchor);
+                        scope.$watch(attrs.ngScrollAnchor, onScrollAnchor);
+                        scope.$watch(attrs.ngForceTouch, onForceTouch);
                         scope.$watch(attrs.ngDragData, onDragDataChange);
                         element.on(_pressEvents, onpress);
                         if(! _hasTouch && element[0].nodeName.toLowerCase() == "img"){
@@ -82,6 +86,15 @@ angular.module("ngDraggable", [])
                     var onCenterAnchor = function (newVal, oldVal) {
                         if(angular.isDefined(newVal))
                         _centerAnchor = (newVal || 'true');
+                    }
+                    
+                    var onScrollAnchor = function( newVal, oldVal) {
+                    	if(angular.isDefined(newVal))
+                    	_scrollAnchor = (newVal || 'true');
+                    }
+                    var onForceTouch = function( newVal, oldVal) {
+                    	if(angular.isDefined(newVal))
+                    	_forceTouch = (newVal || 'true');
                     }
                     
                     var isClickableElement = function (evt) {
@@ -103,12 +116,13 @@ angular.module("ngDraggable", [])
                             return;
                         }
 
-                        if(_hasTouch){
+                        if(_hasTouch || _forceTouch){
                             cancelPress();
+                            var delay = _touchDelay();// for debugging the function result
                             _pressTimer = setTimeout(function(){
                                 cancelPress();
                                 onlongpress(evt);
-                            },100);
+                            },delay);
                             $document.on(_moveEvents, cancelPress);
                             $document.on(_releaseEvents, cancelPress);
                         }else{
@@ -137,7 +151,11 @@ angular.module("ngDraggable", [])
                          if (_centerAnchor) {
                              _tx = _mx - element.centerX - $window.pageXOffset;
                              _ty = _my - element.centerY - $window.pageYOffset;
-                        } else {
+                        }else if (_scrollAnchor){
+                        	_tx = evt.clientX;
+                        	_ty = evt.clientY;
+                        } 
+                        else {
                              _tx = _mx - _mrx - $window.pageXOffset;
                              _ty = _my - _mry - $window.pageYOffset;
                         }                        
@@ -157,7 +175,11 @@ angular.module("ngDraggable", [])
                          if (_centerAnchor) {
                              _tx = _mx - element.centerX - $window.pageXOffset;
                              _ty = _my - element.centerY - $window.pageYOffset;
-                        } else {
+                        }else if (_scrollAnchor){
+                        	 _tx = evt.clientX;
+                        	 _ty = evt.clientY;
+                        }
+                         else {
                              _tx = _mx - _mrx - $window.pageXOffset;
                              _ty = _my - _mry - $window.pageYOffset;
                         }
@@ -206,13 +228,14 @@ angular.module("ngDraggable", [])
                 restrict: 'A',
                 link: function (scope, element, attrs) {
                     scope.value = attrs.ngDrop;
-
+					var _elementSwitchCase = attrs.ngHoverId;
                     var _myid = scope.$id;
 
                     var _dropEnabled=false;
 
                     var onDropCallback = $parse(attrs.ngDropSuccess);// || function(){};
-
+					var onHover = $parse(attrs.ngOnHover);
+					
                     var initialize = function () {
                         toggleListeners(true);
                     };
@@ -264,6 +287,7 @@ angular.module("ngDraggable", [])
 
                     var isTouching = function(mouseX, mouseY, dragElement) {
                         var touching= hitTest(mouseX, mouseY);
+                        if(touching && onHover) onHover(scope, {$hoverid: _elementSwitchCase});
                         updateDragStyles(touching, dragElement);
                         return touching;
                     }
