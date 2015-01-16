@@ -66,7 +66,6 @@ angular.module("ngDraggable", [])
                         scope.$on('$destroy', onDestroy);                       
                         scope.$watch(attrs.ngDrag, onEnableChange);                     
                         scope.$watch(attrs.ngCenterAnchor, onCenterAnchor);
-                        scope.$watch(attrs.ngScrollAnchor, onScrollAnchor);
                         scope.$watch(attrs.ngForceTouch, onForceTouch);
                         scope.$watch(attrs.ngDragData, onDragDataChange);
                         element.on(_pressEvents, onpress);
@@ -249,44 +248,45 @@ angular.module("ngDraggable", [])
                     };
                     var onEnableChange = function (newVal, oldVal) {
                         _dropEnabled=scope.$eval(newVal);
-                    }
+                    };
                     var onDragStart = function(evt, obj) {
                         if(! _dropEnabled)return;
                         isTouching(obj.x,obj.y,obj.element);
                         //add css class to drop element indicating that a drag has started
-                        element.addClass('drag-in-progress');
-                        
-                    }
+                        //element.addClass('drag-in-progress');
+                    };
                     var onDragMove = function(evt, obj) {
                         if(! _dropEnabled)return;
                         isTouching(obj.x,obj.y,obj.element);
-                    }
+                    };
 
                     var onDragEnd = function (evt, obj) {
                         
                         // don't listen to drop events if this is the element being dragged
                         if (!_dropEnabled || _myid === obj.uid)return;
                         if (isTouching(obj.x, obj.y, obj.element)) {
+                            
+                            //remove in progress css class when drag element touches drop element
+                            //element.removeClass('drag-in-progress');
+                            
                             // call the ngDraggable ngDragSuccess element callback
                            if(obj.callback){
                                 obj.callback(obj);
                             }
-                            //remove in progress css class when drag element reaches drop
-                            element.removeClass('drag-in-progress');
 							
                             $timeout(function(){
                                 onDropCallback(scope, {$data: obj.data, $event: obj});
                             });
                         }
                         updateDragStyles(false, obj.element);
-                    }
+                    };
 
                     var isTouching = function(mouseX, mouseY, dragElement) {
                         var touching= hitTest(mouseX, mouseY);
                         if(touching && onHover) onHover(scope, {$hoverid: _elementSwitchCase});
                         updateDragStyles(touching, dragElement);
                         return touching;
-                    }
+                    };
 
                     var updateDragStyles = function(touching, dragElement) {
                         if(touching){
@@ -297,7 +297,7 @@ angular.module("ngDraggable", [])
                             element.removeClass('drag-enter');
                             dragElement.removeClass('drag-over');
                         }
-                    }
+                    };
 
                     var hitTest = function(x, y) {
                         var bounds = ngDraggable.getPrivOffset(element);
@@ -307,7 +307,7 @@ angular.module("ngDraggable", [])
                                 && x <= bounds.right
                                 && y <= bounds.bottom
                                 && y >= bounds.top;
-                    }
+                    };
 
                     initialize();
                 }
