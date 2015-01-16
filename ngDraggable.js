@@ -263,12 +263,14 @@ angular.module("ngDraggable", [])
 
                     var onDragEnd = function (evt, obj) {
                         
+                        //remove in progress css class when drag event ends
+                            element.removeClass('drag-in-progress');
+                        
                         // don't listen to drop events if this is the element being dragged
                         if (!_dropEnabled || _myid === obj.uid)return;
                         if (isTouching(obj.x, obj.y, obj.element)) {
                             
-                            //remove in progress css class when drag element touches drop element
-                            element.removeClass('drag-in-progress');
+                            
                             
                             // call the ngDraggable ngDragSuccess element callback
                            if(obj.callback){
