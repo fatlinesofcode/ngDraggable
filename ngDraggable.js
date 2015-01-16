@@ -253,6 +253,9 @@ angular.module("ngDraggable", [])
                     var onDragStart = function(evt, obj) {
                         if(! _dropEnabled)return;
                         isTouching(obj.x,obj.y,obj.element);
+                        //add css class to drop element indicating that a drag has started
+                        element.addClass('drag-in-progress');
+                        
                     }
                     var onDragMove = function(evt, obj) {
                         if(! _dropEnabled)return;
@@ -268,7 +271,9 @@ angular.module("ngDraggable", [])
                            if(obj.callback){
                                 obj.callback(obj);
                             }
-
+                            //remove in progress css class when drag element reaches drop
+                            element.removeClass('drag-in-progress');
+							
                             $timeout(function(){
                                 onDropCallback(scope, {$data: obj.data, $event: obj});
                             });
@@ -288,6 +293,7 @@ angular.module("ngDraggable", [])
                             element.addClass('drag-enter');
                             dragElement.addClass('drag-over');
                         }else{
+                            
                             element.removeClass('drag-enter');
                             dragElement.removeClass('drag-over');
                         }
