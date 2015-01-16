@@ -38,7 +38,7 @@ angular.module("ngDraggable", [])
                     scope.value = attrs.ngDrag;
                     var _touchDelay = function(){ if(attrs.ngTouchDelay){ return parseInt(attrs.ngTouchDelay);} else{ return 100;}}; _touchDelay();
                     var offset,_centerAnchor=false,_mx,_my,_tx,_ty,_mrx,_mry;
-                    var _scrollAnchor = false, _forceTouch = false; 
+                    var _forceTouch = false; 
                     var _hasTouch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
                     var _pressEvents = 'touchstart mousedown';
                     var _moveEvents = 'touchmove mousemove';
@@ -86,11 +86,6 @@ angular.module("ngDraggable", [])
                     var onCenterAnchor = function (newVal, oldVal) {
                         if(angular.isDefined(newVal))
                         _centerAnchor = (newVal || 'true');
-                    }
-                    
-                    var onScrollAnchor = function( newVal, oldVal) {
-                    	if(angular.isDefined(newVal))
-                    	_scrollAnchor = (newVal || 'true');
                     }
                     var onForceTouch = function( newVal, oldVal) {
                     	if(angular.isDefined(newVal))
@@ -151,10 +146,6 @@ angular.module("ngDraggable", [])
                          if (_centerAnchor) {
                              _tx = _mx - element.centerX - $window.pageXOffset;
                              _ty = _my - element.centerY - $window.pageYOffset;
-                        }else if (_scrollAnchor){
-                        	_tx = evt.clientX;
-                        	_ty = evt.clientY;
-                        } 
                         else {
                              _tx = _mx - _mrx - $window.pageXOffset;
                              _ty = _my - _mry - $window.pageYOffset;
