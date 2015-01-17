@@ -1,9 +1,6 @@
 ngDraggable
 ===========
 
-This is a fork, all of the modifications here are intended to be merged back into the 
-[`main project`] (https://github.com/fatlinesofcode/ngDraggable).
-
 Drag and drop module for Angular JS with support for touch devices. [`demo`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example.html).
 
 ### Usage:
