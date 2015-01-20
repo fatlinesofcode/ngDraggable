@@ -283,7 +283,7 @@ angular.module("ngDraggable", [])
 
                     var isTouching = function(mouseX, mouseY, dragElement) {
                         var touching= hitTest(mouseX, mouseY);
-                        if(!touching && onHoverExit) onHoverExit(scope, {$hover-exit-id:_hoverExitId});
+                        if(!touching && onHoverExit) onHoverExit(scope, {$hoverExitId:_hoverExitId});
                         if(touching && onHover) onHover(scope, {$hoverid: _hoverId});
                         updateDragStyles(touching, dragElement);
                         return touching;
