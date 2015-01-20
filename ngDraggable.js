@@ -216,14 +216,15 @@ angular.module("ngDraggable", [])
                 restrict: 'A',
                 link: function (scope, element, attrs) {
                     scope.value = attrs.ngDrop;
-					var _elementSwitchCase = attrs.ngHoverId;
+					var _hoverId = attrs.ngHoverId;
+					var _hoverExitId = attrs.ngHoverExitId;
                     var _myid = scope.$id;
 
                     var _dropEnabled=false;
 
                     var onDropCallback = $parse(attrs.ngDropSuccess);// || function(){};
 					var onHover = $parse(attrs.ngOnHover);
-					
+					var onHoverExit = $parse(attrs.ngOnHoverExit);
                     var initialize = function () {
                         toggleListeners(true);
                     };
@@ -282,7 +283,8 @@ angular.module("ngDraggable", [])
 
                     var isTouching = function(mouseX, mouseY, dragElement) {
                         var touching= hitTest(mouseX, mouseY);
-                        if(touching && onHover) onHover(scope, {$hoverid: _elementSwitchCase});
+                        if(!touching && onHoverExit) onHoverExit(scope, {$hover-exit-id:_hoverExitId});
+                        if(touching && onHover) onHover(scope, {$hoverid: _hoverId});
                         updateDragStyles(touching, dragElement);
                         return touching;
                     };
