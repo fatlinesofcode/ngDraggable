@@ -43,8 +43,10 @@ angular.module("ngDraggable", [])
                     var _releaseEvents = 'touchend mouseup';
 
                     // to identify the element in order to prevent getting superflous events when a single element has both drag and drop directives on it.
-                    var _myid = scope.$id; 
+                    var _myid = scope.$id;
                     var _data = null;
+
+                    var _dragOffset = null;
 
                     var _dragEnabled = false;
 
@@ -61,8 +63,8 @@ angular.module("ngDraggable", [])
                         if (!enable)return;
                         // add listeners.
 
-                        scope.$on('$destroy', onDestroy);                       
-                        scope.$watch(attrs.ngDrag, onEnableChange);                     
+                        scope.$on('$destroy', onDestroy);
+                        scope.$watch(attrs.ngDrag, onEnableChange);
                         scope.$watch(attrs.ngCenterAnchor, onCenterAnchor);
                         scope.$watch(attrs.ngDragData, onDragDataChange);
                         element.on(_pressEvents, onpress);
@@ -83,7 +85,7 @@ angular.module("ngDraggable", [])
                         if(angular.isDefined(newVal))
                         _centerAnchor = (newVal || 'true');
                     }
-                    
+
                     var isClickableElement = function (evt) {
                         return (
                                 angular.isDefined(angular.element(evt.target).attr("ng-click"))
@@ -126,10 +128,11 @@ angular.module("ngDraggable", [])
                         evt.preventDefault();
                         element.addClass('dragging');
                         offset = ngDraggable.getPrivOffset(element);
+                        _dragOffset = offset;
 
                         element.centerX = element[0].offsetWidth / 2;
-                        element.centerY = element[0].offsetHeight / 2;    
-                        
+                        element.centerY = element[0].offsetHeight / 2;
+
                         _mx = ngDraggable.getEventProp(evt, 'pageX');
                         _my = ngDraggable.getEventProp(evt, 'pageY');
                         _mrx = _mx - offset.left;
@@ -140,8 +143,8 @@ angular.module("ngDraggable", [])
                         } else {
                              _tx = _mx - _mrx - $window.pageXOffset;
                              _ty = _my - _mry - $window.pageYOffset;
-                        }                        
-                        
+                        }
+
                         $document.on(_moveEvents, onmove);
                         $document.on(_releaseEvents, onrelease);
                         $rootScope.$broadcast('draggable:start', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data});
@@ -154,12 +157,12 @@ angular.module("ngDraggable", [])
                         _mx = ngDraggable.getEventProp(evt, 'pageX');
                         _my = ngDraggable.getEventProp(evt, 'pageY');
 
-                         if (_centerAnchor) {
-                             _tx = _mx - element.centerX - $window.pageXOffset;
-                             _ty = _my - element.centerY - $window.pageYOffset;
+                        if (_centerAnchor) {
+                            _tx = _mx - element.centerX - _dragOffset.left;
+                            _ty = _my - element.centerY - _dragOffset.top;
                         } else {
-                             _tx = _mx - _mrx - $window.pageXOffset;
-                             _ty = _my - _mry - $window.pageYOffset;
+                            _tx = _mx - _mrx - $rootScope.tempStartOffset.left;
+                            _ty = _my - _mry - $rootScope.tempStartOffset.top;
                         }
 
                         moveElement(_tx, _ty);
@@ -187,13 +190,13 @@ angular.module("ngDraggable", [])
                     }
 
                     var reset = function() {
-                        element.css({left:'',top:'', position:'', 'z-index':'', margin: ''});
+                        element.css({transform:'', 'z-index':''});
                     }
 
                     var moveElement = function (x, y) {
                         element.css({
-                            left: (x+'px'), top: (y+'px'), position: 'fixed', 'z-index': 99999
-                            //,margin: '0'  don't monkey with the margin, 
+                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)', 'z-index': 99999
+                            //,margin: '0'  don't monkey with the margin,
                         });
                     }
                     initialize();
@@ -246,7 +249,7 @@ angular.module("ngDraggable", [])
                     }
 
                     var onDragEnd = function (evt, obj) {
-                        
+
                         // don't listen to drop events if this is the element being dragged
                         if (!_dropEnabled || _myid === obj.uid)return;
                         if (isTouching(obj.x, obj.y, obj.element)) {
@@ -358,7 +361,7 @@ angular.module("ngDraggable", [])
                     var moveElement = function(x,y) {
                         element.css({
                             left: (x+'px'), top: (y+'px'), position: 'fixed', 'z-index': 99999, 'visibility': 'visible'
-                            //,margin: '0'  don't monkey with the margin, 
+                            //,margin: '0'  don't monkey with the margin,
                         });
                     }
 
