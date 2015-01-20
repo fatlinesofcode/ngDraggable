@@ -195,7 +195,7 @@ angular.module("ngDraggable", [])
 
                     var moveElement = function (x, y) {
                         element.css({
-                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)', 'z-index': 99999
+                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)','z-index': 99999
                             //,margin: '0'  don't monkey with the margin,
                         });
                     }
@@ -295,11 +295,12 @@ angular.module("ngDraggable", [])
                 }
             }
         }])
-        .directive('ngDragClone', ['$parse', '$timeout', function ($parse, $timeout) {
+        .directive('ngDragClone', ['$parse', '$timeout', 'ngDraggable', function ($parse, $timeout, ngDraggable) {
             return {
                 restrict: 'A',
                 link: function (scope, element, attrs) {
                     var img, _allowClone=true;
+                    var _dragOffset = null;
                     scope.clonedData = {};
                     var initialize = function () {
 
@@ -342,10 +343,16 @@ angular.module("ngDraggable", [])
 
                             moveElement(obj.tx, obj.ty);
                         }
+
+                        _dragOffset = ngDraggable.getPrivOffset(element);
                     }
                     var onDragMove = function(evt, obj) {
                         if(_allowClone) {
-                            moveElement(obj.tx, obj.ty);
+
+                            _tx = obj.tx + _dragOffset.left;
+                            _ty = obj.ty + _dragOffset.top;
+
+                            moveElement(_tx, _ty);
                         }
                     }
                     var onDragEnd = function(evt, obj) {
@@ -360,7 +367,7 @@ angular.module("ngDraggable", [])
                     }
                     var moveElement = function(x,y) {
                         element.css({
-                            left: (x+'px'), top: (y+'px'), position: 'fixed', 'z-index': 99999, 'visibility': 'visible'
+                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)', 'z-index': 99999, 'visibility': 'visible'
                             //,margin: '0'  don't monkey with the margin,
                         });
                     }
