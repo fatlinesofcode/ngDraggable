@@ -161,8 +161,8 @@ angular.module("ngDraggable", [])
                             _tx = _mx - element.centerX - _dragOffset.left;
                             _ty = _my - element.centerY - _dragOffset.top;
                         } else {
-                            _tx = _mx - _mrx - $rootScope.tempStartOffset.left;
-                            _ty = _my - _mry - $rootScope.tempStartOffset.top;
+                            _tx = _mx - _mrx - _dragOffset.left;
+                            _ty = _my - _mry - _dragOffset.top;
                         }
 
                         moveElement(_tx, _ty);
