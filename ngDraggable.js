@@ -211,6 +211,41 @@ angular.module("ngDraggable", [])
             };
         }])
 
+		.directive('ngDragObserver',[ function(){
+			return {
+				restrict: 'A',
+				link: function (scope, element, attrs) {
+					
+					var initialize = function () {
+                        toggleListeners(true);
+                    };
+                    
+                    var toggleListeners = function (enable) {
+                        // remove listeners
+                        if (!enable)return;
+                        // add listeners
+                        scope.$on('draggable:start', onDragStart);
+                        scope.$on('draggable:end', onDragEnd);
+                    };
+                    
+                    var onDragStart = function(evt, obj) {
+                        //add css class to observer element indicating that a drag has started
+                        element.addClass('drag-in-progress');
+                    };
+                    
+                    var onDragEnd = function (evt, obj) {
+                        //delay removal of style until isTouching returns true
+                        element.removeClass('drag-in-progress');
+                    };
+                    
+                    initialize();
+					
+				}
+			
+			};
+		
+		}])
+
         .directive('ngDrop', ['$parse', '$timeout', '$window', 'ngDraggable', function ($parse, $timeout, $window, ngDraggable) {
             return {
                 restrict: 'A',
