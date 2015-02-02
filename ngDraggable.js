@@ -220,7 +220,8 @@ angular.module("ngDraggable", [])
                     var moveElement = function (x, y) {
                             var dragContent = draggableElement(element);
                             dragContent.css({
-                            left: (x+'px'), top: (y+'px'), position: 'fixed', 'z-index': 99999
+                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)','z-index': 99999
+                            //,margin: '0'  don't monkey with the margin,
                         });
                     }
                     initialize();
