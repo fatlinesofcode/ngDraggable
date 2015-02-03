@@ -158,11 +158,12 @@ angular.module("ngDraggable", [])
                         _mrx = _mx - offset.left;
                         _mry = _my - offset.top;
                          if (_centerAnchor) {
-                             _tx = _mx - element.centerX - $window.pageXOffset;
-                             _ty = _my - element.centerY - $window.pageYOffset;
+                            _tx = _mx - element.centerX - _dragOffset.left;
+                            _ty = _my - element.centerY - _dragOffset.top;
+
                         } else {
-                             _tx = _mx - _mrx - $window.pageXOffset;
-                             _ty = _my - _mry - $window.pageYOffset;
+                            _tx = _mx - _mrx - _dragOffset.left;
+                            _ty = _my - _mry - _dragOffset.top;
                         }
 
                         $document.on(_moveEvents, onmove);
@@ -178,11 +179,12 @@ angular.module("ngDraggable", [])
                         _my = ngDraggable.getEventProp(evt, 'pageY');
 
                         if (_centerAnchor) {
-                            _tx = _mx - element.centerX - _dragOffset.left;
-                            _ty = _my - element.centerY - _dragOffset.top;
+                             _tx = _mx - element.centerX - $window.pageXOffset;
+                             _ty = _my - element.centerY - $window.pageYOffset;
                         } else {
-                            _tx = _mx - _mrx - _dragOffset.left;
-                            _ty = _my - _mry - _dragOffset.top;
+                             _tx = _mx - _mrx - $window.pageXOffset;
+                             _ty = _my - _mry - $window.pageYOffset;
+
                         }
 
                         moveElement(_tx, _ty);
@@ -214,13 +216,14 @@ angular.module("ngDraggable", [])
 
                     var reset = function() {
                         var dragContent = draggableElement(element);
-                        dragContent.css({transform:'', 'z-index':''});
+                        dragContent.css({left:'',top:'', position:'', 'z-index':'', margin: ''});
+
                     }
 
                     var moveElement = function (x, y) {
                             var dragContent = draggableElement(element);
                             dragContent.css({
-                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)','z-index': 99999
+                            left: (x+'px'), top: (y+'px'), position: 'fixed', 'z-index': 99999
                             //,margin: '0'  don't monkey with the margin,
                         });
                     }
@@ -385,11 +388,8 @@ angular.module("ngDraggable", [])
                     }
                     var onDragMove = function(evt, obj) {
                         if(_allowClone) {
+                            moveElement(obj.tx, obj.ty);
 
-                            _tx = obj.tx + _dragOffset.left;
-                            _ty = obj.ty + _dragOffset.top;
-
-                            moveElement(_tx, _ty);
                         }
                     }
                     var onDragEnd = function(evt, obj) {
@@ -404,7 +404,8 @@ angular.module("ngDraggable", [])
                     }
                     var moveElement = function(x,y) {
                         element.css({
-                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)', 'z-index': 99999, 'visibility': 'visible'
+                            left: (x+'px'), top: (y+'px'), position: 'fixed', 'z-index': 99999, 'visibility': 'visible'
+
                             //,margin: '0'  don't monkey with the margin,
                         });
                     }
