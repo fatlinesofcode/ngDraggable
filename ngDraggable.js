@@ -31,10 +31,17 @@ angular.module("ngDraggable", [])
             }
 
         }])
+        .controller('ngDragController', ['$scope', '$log', function($scope, $log) {
+              this.getDraggableContent = function() {
+                   return $scope.draggableContent;
+              };
+        }])
+
         .directive('ngDrag', ['$rootScope', '$parse', '$document', '$window', 'ngDraggable', function ($rootScope, $parse, $document, $window, ngDraggable) {
             return {
                 restrict: 'A',
-                link: function (scope, element, attrs) {
+                require: '?^ngDragContent',
+                link: function (scope, element, attrs, ngDragContentController) {
                     scope.value = attrs.ngDrag;
                     var offset,_centerAnchor=false,_mx,_my,_tx,_ty,_mrx,_mry;
                     var _hasTouch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
@@ -123,11 +130,24 @@ angular.module("ngDraggable", [])
                         $document.off(_moveEvents, cancelPress);
                         $document.off(_releaseEvents, cancelPress);
                     }
+
+                    var draggableElement = function(element)
+                    {
+                        var dragContent = element;
+                        if(ngDragContentController != null)
+                        {
+                            dragContent = ngDragContentController.getDraggableContent();
+                        }
+                        return dragContent;
+                    }
+
                     var onlongpress = function(evt) {
                         if(! _dragEnabled)return;
                         evt.preventDefault();
                         element.addClass('dragging');
-                        offset = ngDraggable.getPrivOffset(element);
+
+                        var dragContent = draggableElement(element);
+                        offset = ngDraggable.getPrivOffset(dragContent);
                         _dragOffset = offset;
 
                         element.centerX = element[0].offsetWidth / 2;
@@ -138,16 +158,17 @@ angular.module("ngDraggable", [])
                         _mrx = _mx - offset.left;
                         _mry = _my - offset.top;
                          if (_centerAnchor) {
-                             _tx = _mx - element.centerX - $window.pageXOffset;
-                             _ty = _my - element.centerY - $window.pageYOffset;
+                            _tx = _mx - element.centerX - _dragOffset.left;
+                            _ty = _my - element.centerY - _dragOffset.top;
+
                         } else {
-                             _tx = _mx - _mrx - $window.pageXOffset;
-                             _ty = _my - _mry - $window.pageYOffset;
+                            _tx = _mx - _mrx - _dragOffset.left;
+                            _ty = _my - _mry - _dragOffset.top;
                         }
 
                         $document.on(_moveEvents, onmove);
                         $document.on(_releaseEvents, onrelease);
-                        $rootScope.$broadcast('draggable:start', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data});
+                        $rootScope.$broadcast('draggable:start', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:dragContent, data:_data});
                     }
 
                     var onmove = function (evt) {
@@ -158,23 +179,27 @@ angular.module("ngDraggable", [])
                         _my = ngDraggable.getEventProp(evt, 'pageY');
 
                         if (_centerAnchor) {
-                            _tx = _mx - element.centerX - _dragOffset.left;
-                            _ty = _my - element.centerY - _dragOffset.top;
+                             _tx = _mx - element.centerX - $window.pageXOffset;
+                             _ty = _my - element.centerY - $window.pageYOffset;
                         } else {
-                            _tx = _mx - _mrx - _dragOffset.left;
-                            _ty = _my - _mry - _dragOffset.top;
+                             _tx = _mx - _mrx - $window.pageXOffset;
+                             _ty = _my - _mry - $window.pageYOffset;
+
                         }
 
                         moveElement(_tx, _ty);
 
-                        $rootScope.$broadcast('draggable:move', { x: _mx, y: _my, tx: _tx, ty: _ty, event: evt, element: element, data: _data, uid: _myid });
+                        var dragContent = draggableElement(element);
+
+                        $rootScope.$broadcast('draggable:move', { x: _mx, y: _my, tx: _tx, ty: _ty, event: evt, element:dragContent, data: _data, uid: _myid });
                     }
 
                     var onrelease = function(evt) {
                         if (!_dragEnabled)
                             return;
                         evt.preventDefault();
-                        $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data, callback:onDragComplete, uid: _myid});
+                        var dragContent = draggableElement(element);
+                        $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:dragContent, data:_data, callback:onDragComplete, uid: _myid});
                         element.removeClass('dragging');
                         reset();
                         $document.off(_moveEvents, onmove);
@@ -190,18 +215,33 @@ angular.module("ngDraggable", [])
                     }
 
                     var reset = function() {
-                        element.css({transform:'', 'z-index':''});
+                        var dragContent = draggableElement(element);
+                        dragContent.css({left:'',top:'', position:'', 'z-index':'', margin: ''});
+
                     }
 
                     var moveElement = function (x, y) {
-                        element.css({
-                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)','z-index': 99999
+                            var dragContent = draggableElement(element);
+                            dragContent.css({
+                            left: (x+'px'), top: (y+'px'), position: 'fixed', 'z-index': 99999
                             //,margin: '0'  don't monkey with the margin,
                         });
                     }
                     initialize();
                 }
             }
+        }])
+
+        .directive('ngDragContent', ['$log', 'ngDraggable', function ($log, ngDraggable) {
+            return {
+                restrict: 'A',
+                controller: 'ngDragController',
+                link: function (scope, element, attrs) {
+                     // include this element on the scope so it can be used by ng-drag directive
+                     scope.draggableContent = element;
+                }
+            }
+
         }])
 
         .directive('ngDrop', ['$parse', '$timeout', '$window', 'ngDraggable', function ($parse, $timeout, $window, ngDraggable) {
@@ -249,7 +289,9 @@ angular.module("ngDraggable", [])
                     }
 
                     var onDragEnd = function (evt, obj) {
-
+                        // always clear the styles on drag end to ensure removal of
+                        // drag styles on the dragged element.
+                        updateDragStyles(false, obj.element);
                         // don't listen to drop events if this is the element being dragged
                         if (!_dropEnabled || _myid === obj.uid)return;
                         if (isTouching(obj.x, obj.y, obj.element)) {
@@ -262,7 +304,6 @@ angular.module("ngDraggable", [])
                                 onDropCallback(scope, {$data: obj.data, $event: obj});
                             });
                         }
-                        updateDragStyles(false, obj.element);
                     }
 
                     var isTouching = function(mouseX, mouseY, dragElement) {
@@ -348,11 +389,8 @@ angular.module("ngDraggable", [])
                     }
                     var onDragMove = function(evt, obj) {
                         if(_allowClone) {
+                            moveElement(obj.tx, obj.ty);
 
-                            _tx = obj.tx + _dragOffset.left;
-                            _ty = obj.ty + _dragOffset.top;
-
-                            moveElement(_tx, _ty);
                         }
                     }
                     var onDragEnd = function(evt, obj) {
@@ -367,7 +405,8 @@ angular.module("ngDraggable", [])
                     }
                     var moveElement = function(x,y) {
                         element.css({
-                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)', 'z-index': 99999, 'visibility': 'visible'
+                            left: (x+'px'), top: (y+'px'), position: 'fixed', 'z-index': 99999, 'visibility': 'visible'
+
                             //,margin: '0'  don't monkey with the margin,
                         });
                     }
