@@ -231,7 +231,7 @@ angular.module("ngDraggable", [])
                 }
             }
         }])
-        
+
         .directive('ngDragContent', ['$log', 'ngDraggable', function ($log, ngDraggable) {
             return {
                 restrict: 'A',
@@ -241,7 +241,7 @@ angular.module("ngDraggable", [])
                      scope.draggableContent = element;
                 }
             }
-            
+
         }])
 
         .directive('ngDrop', ['$parse', '$timeout', '$window', 'ngDraggable', function ($parse, $timeout, $window, ngDraggable) {
@@ -289,7 +289,9 @@ angular.module("ngDraggable", [])
                     }
 
                     var onDragEnd = function (evt, obj) {
-
+                        // always clear the styles on drag end to ensure removal of
+                        // drag styles on the dragged element.
+                        updateDragStyles(false, obj.element);
                         // don't listen to drop events if this is the element being dragged
                         if (!_dropEnabled || _myid === obj.uid)return;
                         if (isTouching(obj.x, obj.y, obj.element)) {
@@ -302,7 +304,6 @@ angular.module("ngDraggable", [])
                                 onDropCallback(scope, {$data: obj.data, $event: obj});
                             });
                         }
-                        updateDragStyles(false, obj.element);
                     }
 
                     var isTouching = function(mouseX, mouseY, dragElement) {
