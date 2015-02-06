@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <title>ngDraggable</title>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/2.3.1/spruce/bootstrap.min.css">
+  <style>
+
+    
+
+  </style>
+</head>
+<body ng-app="ExampleApp" ng-controller="MainCtrl">
+
+
+
+
+ <div id="iPhoneDisplayContainer" style="display:auto;">
+    
+    <div ng-repeat="item in items" >
+            <div class="DragBox" ng-drag="true" 
+                ng-drag-data="item" 
+                ng-force-touch = "true"
+                ng-touch-delay="300">{{item.s}}
+        	</div>
+    </div> 
+    
+    <div class="hoverZone" ng-drop="true" ng-on-hover="dragAction($hoverid)" ng-hover-id="overzone1">Zone 1</div>
+    <div class="hoverZone" ng-drop="true" ng-on-hover="dragAction($hoverid)"  ng-hover-id="overzone2">Zone 2</div>
+  </div>
+
+  <link href="http://code.ionicframework.com/1.0.0-beta.13/css/ionic.css" rel="stylesheet">
+    <script src="http://code.ionicframework.com/1.0.0-beta.13/js/ionic.bundle.js"></script>
+  <script src="ngDraggable.js"></script>
+  <script>
+   angular.module('ExampleApp', ['ionic', 'ngDraggable'])
+  .controller('MainCtrl', function ($scope, $ionicScrollDelegate, $ionicSlideBoxDelegate) {
+
+    $scope.items = [{s:'a'},{s:'b'},{s:'c'},{s:'d'},{s:'e'}];
+
+   	$scope.dragAction = function(attributeCase){
+     
+        switch(attributeCase){
+       case 'overzone1':
+        	alert("hovering over zone 1");
+         	break;
+       case 'overzone2':
+            alert("hovering over zone 2");
+         	break;
+      }
+   }
+});
+  </script>
+</body>
+</html>
