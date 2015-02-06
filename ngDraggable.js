@@ -408,7 +408,6 @@ angular.module("ngDraggable", [])
 
 
                         _dragOffset = ngDraggable.getPrivOffset(element);
-                    }
 
                     var onDragMove = function(evt, obj) {
                         if(_allowClone) {
