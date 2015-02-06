@@ -91,11 +91,8 @@ angular.module("ngDraggable", [])
                     	_forceTouch = (newVal || 'true');
                     };
                     
-<<<<<<< Updated upstream
                     }
 
-=======
->>>>>>> Stashed changes
                     var isClickableElement = function (evt) {
                         return (
                                 angular.isDefined(angular.element(evt.target).attr("ng-click")) ||
