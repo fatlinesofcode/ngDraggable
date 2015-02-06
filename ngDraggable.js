@@ -90,8 +90,6 @@ angular.module("ngDraggable", [])
                     	if(angular.isDefined(newVal))
                     	_forceTouch = (newVal || 'true');
                     };
-                    
-                    }
 
                     var isClickableElement = function (evt) {
                         return (
