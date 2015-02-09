@@ -6,11 +6,10 @@ Drag and drop module for Angular JS with support for touch devices. [`demo`](htt
 ### Usage:
 
 - Install: `bower install ngDraggable`
-- Add `jquery`, `angular` and `ngDraggable` to your code:
+- Add `angular` and `ngDraggable` to your code:
 
 ```html
-<script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
 <script src="ngDraggable.js"></script>
 ```
 
@@ -57,3 +56,5 @@ app.controller('MainCtrl', function ($scope) {
 [`Re-ordering`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example-reorder.html).
 
 [`Cloning`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example-clone.html).
+
+[`Canceling`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example-cancel.html).

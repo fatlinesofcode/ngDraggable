@@ -8,6 +8,7 @@
     *{
         -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
     }
+
     [ng-drag]{
         -moz-user-select: -moz-none;
         -khtml-user-select: none;
@@ -78,12 +79,18 @@
   <div class="container" ng-controller="MainCtrl">
 
     <div class="row">
-      <h1>ngDraggable Example</h1>
+      <h1>ngDraggable Example.</h1>
+      <h2>Cancel drag from child element.</h2>
     </div>
 
         <ul class="draggable-objects">
             <li  ng-repeat="obj in draggableObjects" >
-                <div ng-drag="true" ng-drag-data="obj"> {{obj.name}} </div>
+                <div ng-drag="true" ng-drag-data="obj"> {{obj.name}}
+                    <select ng-cancel-drag>
+                        <option>No drag</option>
+                        <option>No drag</option>
+                    </select>
+                </div>
             </li>
         </ul>
 
