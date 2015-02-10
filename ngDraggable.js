@@ -304,6 +304,8 @@ angular.module("ngDraggable", [])
                                 onDropCallback(scope, {$data: obj.data, $event: obj});
                             });
                         }
+                        // make a subsequent call in case the object has moved.
+                        updateDragStyles(false, obj.element);
                     }
 
                     var isTouching = function(mouseX, mouseY, dragElement) {
