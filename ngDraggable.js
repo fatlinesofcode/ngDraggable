@@ -41,6 +41,7 @@ angular.module("ngDraggable", [])
                     var _pressEvents = 'touchstart mousedown';
                     var _moveEvents = 'touchmove mousemove';
                     var _releaseEvents = 'touchend mouseup';
+                    var ngDragDisableReset = !!attrs.ngDragDisableReset;
 
                     // to identify the element in order to prevent getting superflous events when a single element has both drag and drop directives on it.
                     var _myid = scope.$id;
@@ -176,7 +177,9 @@ angular.module("ngDraggable", [])
                         evt.preventDefault();
                         $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data, callback:onDragComplete, uid: _myid});
                         element.removeClass('dragging');
-                        reset();
+                        if (!ngDragDisableReset) {
+                          reset();  
+                        } 
                         $document.off(_moveEvents, onmove);
                         $document.off(_releaseEvents, onrelease);
                     }
