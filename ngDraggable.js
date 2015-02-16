@@ -438,4 +438,111 @@ angular.module("ngDraggable", [])
                 element.find('*').attr('ng-cancel-drag', 'ng-cancel-drag');
             }
         }
+    }])
+    .directive('ngDragScroll', ['$window', '$interval', '$timeout', '$document', function($window, $interval, $timeout, $document) {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                var intervalPromise = null;
+                var lastMouseEvent = null;
+
+                var config = {
+                    verticalScroll: attrs.verticalScroll || true,
+                    horizontalScroll: attrs.horizontalScroll || true,
+                    activationDistance: attrs.activationDistance || 75,
+                    scrollDistance: attrs.scrollDistance || 50,
+                    scrollInterval: attrs.scrollInterval || 250
+                };
+
+                var createInterval = function() {
+                    intervalPromise = $interval(function() {
+                        if (!lastMouseEvent) return;
+
+                        var viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+                        var viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+                        var scrollX = 0;
+                        var scrollY = 0;
+
+                        if (config.horizontalScroll) {
+                            // If horizontal scrolling is active.
+                            if (lastMouseEvent.clientX < config.activationDistance) {
+                                // If the mouse is on the left of the viewport within the activation distance.
+                                scrollX = -config.scrollDistance;
+                            }
+                            else if (lastMouseEvent.clientX > viewportWidth - config.activationDistance) {
+                                // If the mouse is on the right of the viewport within the activation distance.
+                                scrollX = config.scrollDistance;
+                            }
+                        }
+
+                        if (config.verticalScroll) {
+                            // If vertical scrolling is active.
+                            if (lastMouseEvent.clientY < config.activationDistance) {
+                                // If the mouse is on the top of the viewport within the activation distance.
+                                scrollY = -config.scrollDistance;
+                            }
+                            else if (lastMouseEvent.clientY > viewportHeight - config.activationDistance) {
+                                // If the mouse is on the bottom of the viewport within the activation distance.
+                                scrollY = config.scrollDistance;
+                            }
+                        }
+
+                        if (scrollX !== 0 || scrollY !== 0) {
+                            // Record the current scroll position.
+                            var currentScrollLeft = $(document).scrollLeft();
+                            var currentScrollTop = $(document).scrollTop();
+
+                            // Remove the transformation from the element, scroll the window by the scroll distance
+                            // record how far we scrolled, then reapply the element transformation.
+                            var elementTransform = element.css('transform');
+                            element.css('transform', 'initial');
+
+                            $window.scrollBy(scrollX, scrollY);
+
+                            var horizontalScrollAmount = $(document).scrollLeft() - currentScrollLeft;
+                            var verticalScrollAmount =  $(document).scrollTop() - currentScrollTop;
+
+                            element.css('transform', elementTransform);
+
+                            // On the next digest cycle, trigger a mousemove event equal to the amount we scrolled so
+                            // the element moves correctly.
+                            $timeout(function() {
+                                lastMouseEvent.pageX += horizontalScrollAmount;
+                                lastMouseEvent.pageY += verticalScrollAmount;
+
+                                $document.trigger(lastMouseEvent);
+                            });
+                        }
+
+                    }, config.scrollInterval);
+                };
+
+                var clearInterval = function() {
+                    $interval.cancel(intervalPromise);
+                    intervalPromise = null;
+                };
+
+                scope.$on('draggable:start', function(event, obj) {
+                    // Ignore this event if it's not for this element.
+                    if (obj.element[0] !== element[0]) return;
+
+                    if (!intervalPromise) createInterval();
+                });
+
+                scope.$on('draggable:end', function(event, obj) {
+                    // Ignore this event if it's not for this element.
+                    if (obj.element[0] !== element[0]) return;
+
+                    if (intervalPromise) clearInterval();
+                });
+
+                scope.$on('draggable:move', function(event, obj) {
+                    // Ignore this event if it's not for this element.
+                    if (obj.element[0] !== element[0]) return;
+
+                    lastMouseEvent = obj.event;
+                });
+            }
+        }
     }]);
