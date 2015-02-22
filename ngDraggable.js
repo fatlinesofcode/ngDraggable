@@ -90,7 +90,7 @@ angular.module("ngDraggable", [])
                     	if(angular.isDefined(newVal))
                     	_forceTouch = (newVal || 'true');
                     };
-
+                    
                     var isClickableElement = function (evt) {
                         return (
                                 angular.isDefined(angular.element(evt.target).attr("ng-click")) ||
@@ -170,12 +170,6 @@ angular.module("ngDraggable", [])
                          else {
                              _tx = _mx - _mrx - $window.pageXOffset;
                              _ty = _my - _mry - $window.pageYOffset;
-                        if (_centerAnchor) {
-                            _tx = _mx - element.centerX - _dragOffset.left;
-                            _ty = _my - element.centerY - _dragOffset.top;
-                        } else {
-                            _tx = _mx - _mrx - _dragOffset.left;
-                            _ty = _my - _mry - _dragOffset.top;
                         }
 
                         moveElement(_tx, _ty);
@@ -205,8 +199,6 @@ angular.module("ngDraggable", [])
                     var reset = function() {
                         element.css({left:'',top:'', position:'', 'z-index':'', margin: ''});
                     };
-                        element.css({transform:'', 'z-index':''});
-                    }
 
                     var moveElement = function (x, y) {
                         element.css({
@@ -405,10 +397,6 @@ angular.module("ngDraggable", [])
                             moveElement(obj.tx, obj.ty);
                         }
                     };
-
-
-                        _dragOffset = ngDraggable.getPrivOffset(element);
-
                     var onDragMove = function(evt, obj) {
                         if(_allowClone) {
                             moveElement(obj.tx, obj.ty);
