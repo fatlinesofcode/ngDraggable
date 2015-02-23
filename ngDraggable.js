@@ -127,6 +127,7 @@ angular.module("ngDraggable", [])
                         if(! _dragEnabled)return;
                         evt.preventDefault();
                         element.addClass('dragging');
+                        element.width(element.width()); // prevent from fixed position
                         offset = ngDraggable.getPrivOffset(element);
                         _dragOffset = offset;
 
@@ -176,6 +177,7 @@ angular.module("ngDraggable", [])
                         evt.preventDefault();
                         $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data, callback:onDragComplete, uid: _myid});
                         element.removeClass('dragging');
+                        element.css("width","initial"); // prevent from fixed position
                         reset();
                         $document.off(_moveEvents, onmove);
                         $document.off(_releaseEvents, onrelease);
