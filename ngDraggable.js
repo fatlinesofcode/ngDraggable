@@ -191,12 +191,13 @@ angular.module("ngDraggable", [])
                     }
 
                     var reset = function() {
-                        element.css({transform:'', 'z-index':''});
+                        element.css({transform:'', 'z-index':'', '-webkit-transform':''});
                     }
 
                     var moveElement = function (x, y) {
                         element.css({
-                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)','z-index': 99999
+                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)','z-index': 99999,
+                            '-webkit-transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)'
                             //,margin: '0'  don't monkey with the margin,
                         });
                     }
@@ -381,7 +382,8 @@ angular.module("ngDraggable", [])
                     };
                     var moveElement = function(x,y) {
                         element.css({
-                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)', 'z-index': 99999, 'visibility': 'visible'
+                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)', 'z-index': 99999, 'visibility': 'visible',
+                            '-webkit-transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)'
                             //,margin: '0'  don't monkey with the margin,
                         });
                     }
