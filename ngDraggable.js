@@ -176,6 +176,7 @@ angular.module("ngDraggable", [])
                         evt.preventDefault();
                         $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data, callback:onDragComplete, uid: _myid});
                         element.removeClass('dragging');
+                        element.closest('.drag-enter').removeClass('drag-enter');
                         reset();
                         $document.off(_moveEvents, onmove);
                         $document.off(_releaseEvents, onrelease);
