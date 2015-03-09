@@ -176,7 +176,7 @@ angular.module("ngDraggable", [])
                         evt.preventDefault();
                         $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data, callback:onDragComplete, uid: _myid});
                         element.removeClass('dragging');
-                        element.closest('.drag-enter').removeClass('drag-enter');
+                        element.parent().find('.drag-enter').removeClass('drag-enter');
                         reset();
                         $document.off(_moveEvents, onmove);
                         $document.off(_releaseEvents, onrelease);
@@ -191,13 +191,14 @@ angular.module("ngDraggable", [])
                     }
 
                     var reset = function() {
-                        element.css({transform:'', 'z-index':'', '-webkit-transform':''});
+                        element.css({transform:'', 'z-index':'', '-webkit-transform':'', '-ms-transform':''});
                     }
 
                     var moveElement = function (x, y) {
                         element.css({
                             transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)','z-index': 99999,
-                            '-webkit-transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)'
+                            '-webkit-transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)',
+                            '-ms-transform': 'matrix(1, 0, 0, 1, '+x+', '+y+')'
                             //,margin: '0'  don't monkey with the margin,
                         });
                     }
@@ -387,7 +388,8 @@ angular.module("ngDraggable", [])
                     var moveElement = function(x,y) {
                         element.css({
                             transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)', 'z-index': 99999, 'visibility': 'visible',
-                            '-webkit-transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)'
+                            '-webkit-transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)',
+                            '-ms-transform': 'matrix(1, 0, 0, 1, '+x+', '+y+')'
                             //,margin: '0'  don't monkey with the margin,
                         });
                     }
