@@ -83,7 +83,7 @@
 
         <ul class="draggable-objects">
             <li  ng-repeat="obj in draggableObjects" >
-                <div ng-drag="true" ng-drag-data="obj"> {{obj.name}} </div>
+                <div ng-drag="true" ng-drag-data="obj" data-allow-transform="true"> {{obj.name}} </div>
             </li>
         </ul>
 

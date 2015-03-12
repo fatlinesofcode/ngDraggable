@@ -35,6 +35,9 @@ angular.module("ngDraggable", [])
                     var _pressTimer = null;
 
                     var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
+                    var allowTransform = angular.isDefined(attrs.allowTransform) ? scope.$eval(attrs.allowTransform) : true;
+
+                    console.log("40","scope","link",  angular.isDefined(attrs.allowTransform) , allowTransform);
 
                     var initialize = function () {
                         element.attr('draggable', 'false'); // prevent native drag
@@ -125,7 +128,12 @@ angular.module("ngDraggable", [])
                         element.addClass('dragging');
 
                         offset = element[0].getBoundingClientRect();
+                        if(allowTransform)
                         _dragOffset = offset;
+                        else{
+                            _dragOffset = {left:document.body.scrollLeft, top:document.body.scrollTop};
+                        }
+
 
                         element.centerX = element[0].offsetWidth / 2;
                         element.centerY = element[0].offsetHeight / 2;
@@ -188,15 +196,23 @@ angular.module("ngDraggable", [])
                     }
 
                     var reset = function() {
+                        if(allowTransform)
                         element.css({transform:'', 'z-index':'', '-webkit-transform':'', '-ms-transform':''});
+                        else
+                        element.css({'position':'',top:'',left:''})
                     }
 
                     var moveElement = function (x, y) {
-                        element.css({
-                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)','z-index': 99999,
-                            '-webkit-transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)',
-                            '-ms-transform': 'matrix(1, 0, 0, 1, '+x+', '+y+')'
-                        });
+                        if(allowTransform) {
+                            element.css({
+                                transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, ' + x + ', ' + y + ', 0, 1)',
+                                'z-index': 99999,
+                                '-webkit-transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, ' + x + ', ' + y + ', 0, 1)',
+                                '-ms-transform': 'matrix(1, 0, 0, 1, ' + x + ', ' + y + ')'
+                            });
+                        }else{
+                            element.css({'left':x+'px','top':y+'px', 'position':'fixed'});
+                        }
                     }
                     initialize();
                 }
