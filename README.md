@@ -30,10 +30,10 @@ Draggable usage:
 ```
 Note: ng-center-anchor is optional. If not specified, it defaults to false.
 
-```ng-drag-start``` and ```ng-drag-move``` is also available.
+```ng-drag-start``` and ```ng-drag-move``` is also available. Add to the ng-drop element.
 ``ng-drag-stop`` can be used when you want to react to the user dragging an item and it wasn't dropped into the target container.
 
-```draggable:start```, ```draggable:move``` and  ```draggable:end``` events are broadcasted on drag actions.
+```draggable:start```, ```draggable:move``` and  ```draggable:end``` events are broadcast on drag actions.
 
 
 Drop area usage:

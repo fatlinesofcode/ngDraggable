@@ -210,6 +210,7 @@ angular.module("ngDraggable", [])
                 restrict: 'A',
                 link: function (scope, element, attrs) {
                     scope.value = attrs.ngDrop;
+                    scope.isTouching = false;
 
                     var _myid = scope.$id;
 
@@ -285,6 +286,7 @@ angular.module("ngDraggable", [])
 
                     var isTouching = function(mouseX, mouseY, dragElement) {
                         var touching= hitTest(mouseX, mouseY);
+                        scope.isTouching = touching;
                         updateDragStyles(touching, dragElement);
                         return touching;
                     }
