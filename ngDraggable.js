@@ -19,16 +19,6 @@ angular.module("ngDraggable", [])
                 }
             };
 
-            this.getPrivOffset = function getPrivOffset(docElem) {
-                var box = { top: 0, left: 0 };
-                if (isDef(docElem[0].getBoundingClientRect)) {
-                    box = docElem[0].getBoundingClientRect();
-                }
-                return {
-                    top: box.top + $window.pageYOffset - docElem[0].clientTop,
-                    left: box.left + $window.pageXOffset - docElem[0].clientLeft
-                };
-            }
 
         }])
         .directive('ngDrag', ['$rootScope', '$parse', '$document', '$window', 'ngDraggable', function ($rootScope, $parse, $document, $window, ngDraggable) {
@@ -127,7 +117,8 @@ angular.module("ngDraggable", [])
                         if(! _dragEnabled)return;
                         evt.preventDefault();
                         element.addClass('dragging');
-                        offset = ngDraggable.getPrivOffset(element);
+
+                        offset = element[0].getBoundingClientRect();
                         _dragOffset = offset;
 
                         element.centerX = element[0].offsetWidth / 2;
@@ -177,6 +168,7 @@ angular.module("ngDraggable", [])
                         $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data, callback:onDragComplete, uid: _myid});
                         element.removeClass('dragging');
                         element.parent().find('.drag-enter').removeClass('drag-enter');
+                      //  element.css("width","");
                         reset();
                         $document.off(_moveEvents, onmove);
                         $document.off(_releaseEvents, onrelease);
@@ -302,7 +294,7 @@ angular.module("ngDraggable", [])
                     }
 
                     var hitTest = function(x, y) {
-                        var bounds = ngDraggable.getPrivOffset(element);
+                        var bounds = element[0].getBoundingClientRect();// ngDraggable.getPrivOffset(element);
                         bounds.right = bounds.left + element[0].offsetWidth;
                         bounds.bottom = bounds.top + element[0].offsetHeight;
                         return  x >= bounds.left
@@ -364,7 +356,7 @@ angular.module("ngDraggable", [])
                             moveElement(obj.tx, obj.ty);
                         }
 
-                        _dragOffset = ngDraggable.getPrivOffset(element);
+                        _dragOffset = element[0].getBoundingClientRect();//ngDraggable.getPrivOffset(element);
                     }
                     var onDragMove = function(evt, obj) {
                         if(_allowClone) {
