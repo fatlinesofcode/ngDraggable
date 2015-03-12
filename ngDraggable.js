@@ -3,22 +3,13 @@
  * https://github.com/fatlinesofcode/ngDraggable
  */
 angular.module("ngDraggable", [])
-        .service('ngDraggable', ['$window', function($window) {
+        .service('ngDraggable', [function() {
 
-            var isDef = function(val) { return typeof val !== 'undefined'; };
-
-            this.getEventProp = function getEventProp(evt, prop, skipOriginal) {
-                if (isDef(evt.touches) && evt.touches[0]) {
-                    return evt.touches[0][prop];
-                }
-                if (isDef(evt[prop])) {
-                    return evt[prop];
-                }
-                if (evt.originalEvent && !skipOriginal) {
-                    return this.getEventProp(evt.originalEvent, prop, true);
-                }
-            };
-
+           
+            var scope = this;
+            scope.inputEvent = function(event) {
+                return angular.isDefined(event.touches) ? event.touches[0] : event;
+            }
 
         }])
         .directive('ngDrag', ['$rootScope', '$parse', '$document', '$window', 'ngDraggable', function ($rootScope, $parse, $document, $window, ngDraggable) {
@@ -121,11 +112,13 @@ angular.module("ngDraggable", [])
                         }
 
                     };
+
                     var cancelPress = function() {
                         clearTimeout(_pressTimer);
                         $document.off(_moveEvents, cancelPress);
                         $document.off(_releaseEvents, cancelPress);
                     };
+
                     var onlongpress = function(evt) {
                         if(! _dragEnabled)return;
                         evt.preventDefault();
@@ -137,8 +130,8 @@ angular.module("ngDraggable", [])
                         element.centerX = element[0].offsetWidth / 2;
                         element.centerY = element[0].offsetHeight / 2;
 
-                        _mx = ngDraggable.getEventProp(evt, 'pageX');
-                        _my = ngDraggable.getEventProp(evt, 'pageY');
+                        _mx = ngDraggable.inputEvent(evt).pageX;//ngDraggable.getEventProp(evt, 'pageX');
+                        _my = ngDraggable.inputEvent(evt).pageY;//ngDraggable.getEventProp(evt, 'pageY');
                         _mrx = _mx - offset.left;
                         _mry = _my - offset.top;
                          if (_centerAnchor) {
@@ -158,8 +151,8 @@ angular.module("ngDraggable", [])
                         if (!_dragEnabled)return;
                         evt.preventDefault();
 
-                        _mx = ngDraggable.getEventProp(evt, 'pageX');
-                        _my = ngDraggable.getEventProp(evt, 'pageY');
+                        _mx = ngDraggable.inputEvent(evt).pageX;//ngDraggable.getEventProp(evt, 'pageX');
+                        _my = ngDraggable.inputEvent(evt).pageY;//ngDraggable.getEventProp(evt, 'pageY');
 
                         if (_centerAnchor) {
                             _tx = _mx - element.centerX - _dragOffset.left;
@@ -400,7 +393,7 @@ angular.module("ngDraggable", [])
                     }
 
                     var absorbEvent_ = function (event) {
-                        var e = event.originalEvent;
+                        var e = event;//.originalEvent;
                         e.preventDefault && e.preventDefault();
                         e.stopPropagation && e.stopPropagation();
                         e.cancelBubble = true;
