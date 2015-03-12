@@ -25,7 +25,7 @@ angular.module("ngDraggable", [])
                     var _dragHandle;
 
                     // to identify the element in order to prevent getting superflous events when a single element has both drag and drop directives on it.
-                    var _myid = angular.isDefined(scope.$id) || 0;
+                    var _myid = scope.$id;
                     var _data = null;
 
                     var _dragOffset = null;
@@ -174,7 +174,6 @@ angular.module("ngDraggable", [])
                         $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data, callback:onDragComplete, uid: _myid});
                         element.removeClass('dragging');
                         element.parent().find('.drag-enter').removeClass('drag-enter');
-                      //  element.css("width","");
                         reset();
                         $document.off(_moveEvents, onmove);
                         $document.off(_releaseEvents, onrelease);
@@ -210,6 +209,8 @@ angular.module("ngDraggable", [])
                 link: function (scope, element, attrs) {
                     scope.value = attrs.ngDrop;
                     scope.isTouching = false;
+
+                    var _lastDropTouch=null;
 
                     var _myid = scope.$id;
 
@@ -263,6 +264,7 @@ angular.module("ngDraggable", [])
 
                         // don't listen to drop events if this is the element being dragged
                         // only update the styles and return
+                        console.log("266","onDragEnd","onDragEnd", _myid, obj.uid);
                         if (!_dropEnabled || _myid === obj.uid) {
                             updateDragStyles(false, obj.element);
                             return;
@@ -286,6 +288,9 @@ angular.module("ngDraggable", [])
                     var isTouching = function(mouseX, mouseY, dragElement) {
                         var touching= hitTest(mouseX, mouseY);
                         scope.isTouching = touching;
+                        if(touching){
+                            _lastDropTouch = element;
+                        }
                         updateDragStyles(touching, dragElement);
                         return touching;
                     }
@@ -294,7 +299,8 @@ angular.module("ngDraggable", [])
                         if(touching){
                             element.addClass('drag-enter');
                             dragElement.addClass('drag-over');
-                        }else{
+                        }else if(_lastDropTouch == element){
+                            _lastDropTouch=null;
                             element.removeClass('drag-enter');
                             dragElement.removeClass('drag-over');
                         }
