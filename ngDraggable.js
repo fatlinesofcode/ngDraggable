@@ -25,7 +25,7 @@ angular.module("ngDraggable", [])
                     var _dragHandle;
 
                     // to identify the element in order to prevent getting superflous events when a single element has both drag and drop directives on it.
-                    var _myid = scope.$id;
+                    var _myid = angular.isDefined(scope.$id) || 0;
                     var _data = null;
 
                     var _dragOffset = null;
@@ -197,7 +197,6 @@ angular.module("ngDraggable", [])
                             transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)','z-index': 99999,
                             '-webkit-transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)',
                             '-ms-transform': 'matrix(1, 0, 0, 1, '+x+', '+y+')'
-                            //,margin: '0'  don't monkey with the margin,
                         });
                     }
                     initialize();
