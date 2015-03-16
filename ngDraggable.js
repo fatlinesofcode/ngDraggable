@@ -37,6 +37,9 @@ angular.module("ngDraggable", [])
                     var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
                     var allowTransform = angular.isDefined(attrs.allowTransform) ? scope.$eval(attrs.allowTransform) : true;
 
+                    // deregistration function for mouse move events in $rootScope triggered by jqLite trigger handler
+                    var _deregisterRootMoveListener = angular.noop;
+
                     var initialize = function () {
                         element.attr('draggable', 'false'); // prevent native drag
                         // check to see if drag handle(s) was specified
@@ -150,6 +153,13 @@ angular.module("ngDraggable", [])
 
                         $document.on(_moveEvents, onmove);
                         $document.on(_releaseEvents, onrelease);
+                        // This event is used to receive manually triggered mouse move events
+                        // jqLite unfortunately only supports triggerHandler(...)
+                        // See http://api.jquery.com/triggerHandler/
+                        // _deregisterRootMoveListener = $rootScope.$on('draggable:_triggerHandlerMove', onmove);
+                        _deregisterRootMoveListener = $rootScope.$on('draggable:_triggerHandlerMove', function(event, origEvent) {
+                            onmove(origEvent);
+                        });
                         $rootScope.$broadcast('draggable:start', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data});
                     };
 
@@ -183,6 +193,7 @@ angular.module("ngDraggable", [])
                         reset();
                         $document.off(_moveEvents, onmove);
                         $document.off(_releaseEvents, onrelease);
+                        _deregisterRootMoveListener();
                     };
 
                     var onDragComplete = function(evt) {
@@ -466,7 +477,7 @@ angular.module("ngDraggable", [])
             }
         };
     }])
-    .directive('ngDragScroll', ['$window', '$interval', '$timeout', '$document', function($window, $interval, $timeout, $document) {
+    .directive('ngDragScroll', ['$window', '$interval', '$timeout', '$document', '$rootScope', function($window, $interval, $timeout, $document, $rootScope) {
         return {
             restrict: 'A',
             link: function(scope, element, attrs) {
@@ -517,8 +528,8 @@ angular.module("ngDraggable", [])
 
                         if (scrollX !== 0 || scrollY !== 0) {
                             // Record the current scroll position.
-                            var currentScrollLeft = $(document).scrollLeft();
-                            var currentScrollTop = $(document).scrollTop();
+                            var currentScrollLeft = $document[0].documentElement.scrollLeft;
+                            var currentScrollTop = $document[0].documentElement.scrollTop;
 
                             // Remove the transformation from the element, scroll the window by the scroll distance
                             // record how far we scrolled, then reapply the element transformation.
@@ -527,8 +538,8 @@ angular.module("ngDraggable", [])
 
                             $window.scrollBy(scrollX, scrollY);
 
-                            var horizontalScrollAmount = $(document).scrollLeft() - currentScrollLeft;
-                            var verticalScrollAmount =  $(document).scrollTop() - currentScrollTop;
+                            var horizontalScrollAmount = $document[0].documentElement.scrollLeft - currentScrollLeft;
+                            var verticalScrollAmount =  $document[0].documentElement.scrollTop - currentScrollTop;
 
                             element.css('transform', elementTransform);
 
@@ -538,7 +549,7 @@ angular.module("ngDraggable", [])
                                 lastMouseEvent.pageX += horizontalScrollAmount;
                                 lastMouseEvent.pageY += verticalScrollAmount;
 
-                                $document.trigger(lastMouseEvent);
+                                $rootScope.$emit('draggable:_triggerHandlerMove', lastMouseEvent);
                             });
                         }
 
