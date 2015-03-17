@@ -56,6 +56,16 @@ app.controller('MainCtrl', function ($scope) {
  };
 ```
 
+### Config
+
+To turn debug logging on, call `setDebugLogging` on the provider:
+
+```js
+yourApp.config(function (ngDraggableProvider) {
+  ngDraggableProvider.setDebugLogging(true);
+});
+```
+
 ## Examples
 [`Drag and drop`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example.html).
 
