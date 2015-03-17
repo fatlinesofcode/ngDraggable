@@ -37,8 +37,6 @@ angular.module("ngDraggable", [])
                     var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
                     var allowTransform = angular.isDefined(attrs.allowTransform) ? scope.$eval(attrs.allowTransform) : true;
 
-                    console.log("40","scope","link",  angular.isDefined(attrs.allowTransform) , allowTransform);
-
                     var initialize = function () {
                         element.attr('draggable', 'false'); // prevent native drag
                         // check to see if drag handle(s) was specified
@@ -63,7 +61,7 @@ angular.module("ngDraggable", [])
                             _dragHandle.on(_pressEvents, onpress);
                         } else {
                             // no handle(s) specified, use the element as the handle
-                            element.on(_pressEvents, onpress);    
+                            element.on(_pressEvents, onpress);
                         }
                         if(! _hasTouch && element[0].nodeName.toLowerCase() == "img"){
                             element.on('mousedown', function(){ return false;}); // prevent native drag for images
@@ -263,7 +261,7 @@ angular.module("ngDraggable", [])
                     var onDragStart = function(evt, obj) {
                         if(! _dropEnabled)return;
                         isTouching(obj.x,obj.y,obj.element);
-                        
+
                         $timeout(function(){
                             onDragStartCallback(scope, {$data: obj.data, $event: obj});
                         });
@@ -280,7 +278,6 @@ angular.module("ngDraggable", [])
 
                         // don't listen to drop events if this is the element being dragged
                         // only update the styles and return
-                        console.log("266","onDragEnd","onDragEnd", _myid, obj.uid);
                         if (!_dropEnabled || _myid === obj.uid) {
                             updateDragStyles(false, obj.element);
                             return;
