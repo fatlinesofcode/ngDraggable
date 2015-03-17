@@ -3,14 +3,26 @@
  * https://github.com/fatlinesofcode/ngDraggable
  */
 angular.module("ngDraggable", [])
-        .service('ngDraggable', [function() {
+        .provider('ngDraggable', [function(){
+            var logToConsole;
+            console || (console = {log : function(){}});
 
+            this.setDebugLogging = function(shouldLog) {
+                logToConsole = shouldLog;
+            };
 
-            var scope = this;
-            scope.inputEvent = function(event) {
-                return angular.isDefined(event.touches) ? event.touches[0] : event;
-            }
-
+            this.$get = function() {
+                return {
+                    inputEvent : function(event) {
+                        return angular.isDefined(event.touches) ? event.touches[0] : event;
+                    },
+                    log : function() {
+                        if (logToConsole) {
+                            console.log.apply(console, arguments);
+                        }
+                    }
+                }
+            };
         }])
         .directive('ngDrag', ['$rootScope', '$parse', '$document', '$window', 'ngDraggable', function ($rootScope, $parse, $document, $window, ngDraggable) {
             return {
@@ -37,7 +49,7 @@ angular.module("ngDraggable", [])
                     var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
                     var allowTransform = angular.isDefined(attrs.allowTransform) ? scope.$eval(attrs.allowTransform) : true;
 
-                    console.log("40","scope","link",  angular.isDefined(attrs.allowTransform) , allowTransform);
+                    ngDraggable.log("40","scope","link",  angular.isDefined(attrs.allowTransform) , allowTransform);
 
                     var initialize = function () {
                         element.attr('draggable', 'false'); // prevent native drag
@@ -63,7 +75,7 @@ angular.module("ngDraggable", [])
                             _dragHandle.on(_pressEvents, onpress);
                         } else {
                             // no handle(s) specified, use the element as the handle
-                            element.on(_pressEvents, onpress);    
+                            element.on(_pressEvents, onpress);
                         }
                         if(! _hasTouch && element[0].nodeName.toLowerCase() == "img"){
                             element.on('mousedown', function(){ return false;}); // prevent native drag for images
@@ -263,7 +275,7 @@ angular.module("ngDraggable", [])
                     var onDragStart = function(evt, obj) {
                         if(! _dropEnabled)return;
                         isTouching(obj.x,obj.y,obj.element);
-                        
+
                         $timeout(function(){
                             onDragStartCallback(scope, {$data: obj.data, $event: obj});
                         });
@@ -280,7 +292,7 @@ angular.module("ngDraggable", [])
 
                         // don't listen to drop events if this is the element being dragged
                         // only update the styles and return
-                        console.log("266","onDragEnd","onDragEnd", _myid, obj.uid);
+                        ngDraggable.log("266","onDragEnd","onDragEnd", _myid, obj.uid);
                         if (!_dropEnabled || _myid === obj.uid) {
                             updateDragStyles(false, obj.element);
                             return;
