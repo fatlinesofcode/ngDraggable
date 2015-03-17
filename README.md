@@ -35,6 +35,7 @@ Note: ng-center-anchor is optional. If not specified, it defaults to false.
 
 ```draggable:start```, ```draggable:move``` and  ```draggable:end``` events are broadcast on drag actions.
 
+
 Drop area usage:
 ```html
 <div ng-drop="true" ng-drop-success="onDropComplete($data,$event)" >
