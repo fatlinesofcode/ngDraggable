@@ -64,7 +64,7 @@ angular.module("ngDraggable", [])
                             _dragHandle.on(_pressEvents, onpress);
                         } else {
                             // no handle(s) specified, use the element as the handle
-                            element.on(_pressEvents, onpress);    
+                            element.on(_pressEvents, onpress);
                         }
                         if(! _hasTouch && element[0].nodeName.toLowerCase() == "img"){
                             element.on('mousedown', function(){ return false;}); // prevent native drag for images
@@ -272,7 +272,7 @@ angular.module("ngDraggable", [])
                     var onDragStart = function(evt, obj) {
                         if(! _dropEnabled)return;
                         isTouching(obj.x,obj.y,obj.element);
-                        
+
                         $timeout(function(){
                             onDragStartCallback(scope, {$data: obj.data, $event: obj});
                         });
@@ -330,14 +330,14 @@ angular.module("ngDraggable", [])
                         }
                     };
 
-                    var hitTest = function(x, y) {
+                     var hitTest = function(x, y) {
                         var bounds = element[0].getBoundingClientRect();// ngDraggable.getPrivOffset(element);
                         bounds.right = bounds.left + element[0].offsetWidth;
                         bounds.bottom = bounds.top + element[0].offsetHeight;
-                        return  x >= bounds.left
-                                && x <= bounds.right
-                                && y <= bounds.bottom
-                                && y >= bounds.top;
+                        return  x >= bounds.left + window.pageXOffset
+                                && x <= bounds.right + window.pageXOffset
+                                && y <= bounds.bottom + window.pageYOffset
+                                && y >= bounds.top + window.pageYOffset;
                     };
 
                     initialize();
