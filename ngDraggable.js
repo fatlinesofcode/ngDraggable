@@ -272,17 +272,22 @@ angular.module("ngDraggable", [])
                     var onDragStart = function(evt, obj) {
                         if(! _dropEnabled)return;
                         isTouching(obj.x,obj.y,obj.element);
-                        
-                        $timeout(function(){
-                            onDragStartCallback(scope, {$data: obj.data, $event: obj});
-                        });
+
+                        if (attrs.ngDragStart) {
+                            $timeout(function(){
+                                onDragStartCallback(scope, {$data: obj.data, $event: obj});
+                            });
+                        }
                     };
                     var onDragMove = function(evt, obj) {
                         if(! _dropEnabled)return;
                         isTouching(obj.x,obj.y,obj.element);
-                        $timeout(function(){
-                            onDragMoveCallback(scope, {$data: obj.data, $event: obj});
-                        });
+
+                        if (attrs.ngDragMove) {
+                            $timeout(function(){
+                                onDragMoveCallback(scope, {$data: obj.data, $event: obj});
+                            });
+                        }
                     };
 
                     var onDragEnd = function (evt, obj) {
@@ -299,13 +304,19 @@ angular.module("ngDraggable", [])
                                 obj.callback(obj);
                             }
 
+                            if (attrs.ngDropSuccess) {
+                                $timeout(function(){
+                                    onDropCallback(scope, {$data: obj.data, $event: obj, $target: scope.$eval(scope.value)});
+                                });
+                            }
+                        }
+
+                        if (attrs.ngDragStop) {
                             $timeout(function(){
-                                onDropCallback(scope, {$data: obj.data, $event: obj, $target: scope.$eval(scope.value)});
+                                onDragStopCallback(scope, {$data: obj.data, $event: obj});
                             });
                         }
-                        $timeout(function(){
-                            onDragStopCallback(scope, {$data: obj.data, $event: obj});
-                        });
+
                         updateDragStyles(false, obj.element);
                     };
 
