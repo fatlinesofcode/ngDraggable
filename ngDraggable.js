@@ -98,11 +98,6 @@ angular.module("ngDraggable", [])
                     var onpress = function(evt) {
                         if(! _dragEnabled)return;
 
-                        // disable drag on clickable element
-                        if (isClickableElement(evt)) {
-                            return;
-                        }
-
                         if(_hasTouch){
                             cancelPress();
                             _pressTimer = setTimeout(function(){
@@ -126,7 +121,6 @@ angular.module("ngDraggable", [])
                     var onlongpress = function(evt) {
                         if(! _dragEnabled)return;
                         evt.preventDefault();
-                        element.addClass('dragging');
 
                         offset = element[0].getBoundingClientRect();
                         if(allowTransform)
@@ -160,12 +154,16 @@ angular.module("ngDraggable", [])
                         _deregisterRootMoveListener = $rootScope.$on('draggable:_triggerHandlerMove', function(event, origEvent) {
                             onmove(origEvent);
                         });
-                        $rootScope.$broadcast('draggable:start', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data});
                     };
 
                     var onmove = function (evt) {
                         if (!_dragEnabled)return;
                         evt.preventDefault();
+
+                        if (!element.hasClass('dragging')) {
+                            element.addClass('dragging');
+                            $rootScope.$broadcast('draggable:start', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data});
+                        }
 
                         _mx = ngDraggable.inputEvent(evt).pageX;//ngDraggable.getEventProp(evt, 'pageX');
                         _my = ngDraggable.inputEvent(evt).pageY;//ngDraggable.getEventProp(evt, 'pageY');
