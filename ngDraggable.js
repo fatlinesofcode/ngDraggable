@@ -84,6 +84,15 @@ angular.module("ngDraggable", [])
                         _centerAnchor = (newVal || 'true');
                     };
 
+                    var isDragDisable = function (evt) {
+                      var root = angular.element(element);
+                      var elem = angular.element(evt.target);
+                      while (elem[0] != root[0]) {
+                        if (angular.isDefined(elem.attr('ng-drag-cancel'))) return true;
+                        elem = elem.parent();
+                      }
+                      return false;
+                    };
                     var isClickableElement = function (evt) {
                         return (
                                 angular.isDefined(angular.element(evt.target).attr("ng-click"))
@@ -96,7 +105,7 @@ angular.module("ngDraggable", [])
                      * On touch devices as a small delay so as not to prevent native window scrolling
                      */
                     var onpress = function(evt) {
-                        if(! _dragEnabled)return;
+                        if(! _dragEnabled || isDragDisable(evt))return;
 
                         if(_hasTouch){
                             cancelPress();
@@ -119,7 +128,7 @@ angular.module("ngDraggable", [])
                     };
 
                     var onlongpress = function(evt) {
-                        if(! _dragEnabled)return;
+                        if(! _dragEnabled || isDragDisable(evt))return;
                         evt.preventDefault();
 
                         offset = element[0].getBoundingClientRect();
@@ -157,7 +166,7 @@ angular.module("ngDraggable", [])
                     };
 
                     var onmove = function (evt) {
-                        if (!_dragEnabled)return;
+                        if (!_dragEnabled || isDragDisable(evt))return;
                         evt.preventDefault();
 
                         if (!element.hasClass('dragging')) {
@@ -182,7 +191,7 @@ angular.module("ngDraggable", [])
                     };
 
                     var onrelease = function(evt) {
-                        if (!_dragEnabled)
+                        if (!_dragEnabled || isDragDisable(evt))
                             return;
                         evt.preventDefault();
                         $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data, callback:onDragComplete, uid: _myid});
