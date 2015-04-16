@@ -64,7 +64,7 @@ angular.module("ngDraggable", [])
                             _dragHandle.on(_pressEvents, onpress);
                         } else {
                             // no handle(s) specified, use the element as the handle
-                            element.on(_pressEvents, onpress);    
+                            element.on(_pressEvents, onpress);
                         }
                         if(! _hasTouch && element[0].nodeName.toLowerCase() == "img"){
                             element.on('mousedown', function(){ return false;}); // prevent native drag for images
@@ -97,6 +97,10 @@ angular.module("ngDraggable", [])
                      */
                     var onpress = function(evt) {
                         if(! _dragEnabled)return;
+
+                        if (isClickableElement(evt)) {
+                            return;
+                        }
 
                         if(_hasTouch){
                             cancelPress();
