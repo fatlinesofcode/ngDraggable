@@ -228,7 +228,7 @@ angular.module("ngDraggable", [])
             };
         }])
 
-        .directive('ngDrop', ['$parse', '$timeout', '$window', 'ngDraggable', function ($parse, $timeout, $window, ngDraggable) {
+        .directive('ngDrop', ['$parse', '$timeout', '$window', '$document', 'ngDraggable', function ($parse, $timeout, $window, $document, ngDraggable) {
             return {
                 restrict: 'A',
                 link: function (scope, element, attrs) {
@@ -343,8 +343,8 @@ angular.module("ngDraggable", [])
 
                     var hitTest = function(x, y) {
                         var bounds = element[0].getBoundingClientRect();// ngDraggable.getPrivOffset(element);
-                        x -= $document.body.scrollLeft + $document.documentElement.scrollLeft;
-                        y -= $document.body.scrollTop + $document.documentElement.scrollTop;
+                        x -= $document[0].body.scrollLeft + $document[0].documentElement.scrollLeft;
+                        y -= $document[0].body.scrollTop + $document[0].documentElement.scrollTop;
                         return  x >= bounds.left
                                 && x <= bounds.right
                                 && y <= bounds.bottom
