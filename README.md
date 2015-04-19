@@ -69,4 +69,4 @@ app.controller('MainCtrl', function ($scope) {
 [`Canceling`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example-cancel.html).
 
 ## Pull requests
-We welcome pull requests but please check that all the demos still work if you modified the source base. There have been serveral PRs recently that broke core functionality. If you are feeling really keen you could include some protractor test cases in your PR.
+We welcome pull requests but please check that all the examples still work if you modified the source base. There have been serveral PRs recently that broke core functionality. If you are feeling really keen you could include some protractor test cases in your PR.
