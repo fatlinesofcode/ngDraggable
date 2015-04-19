@@ -228,7 +228,7 @@ angular.module("ngDraggable", [])
             };
         }])
 
-        .directive('ngDrop', ['$parse', '$timeout', '$window', 'ngDraggable', function ($parse, $timeout, $window, ngDraggable) {
+        .directive('ngDrop', ['$parse', '$timeout', '$window', '$document', 'ngDraggable', function ($parse, $timeout, $window, $document, ngDraggable) {
             return {
                 restrict: 'A',
                 link: function (scope, element, attrs) {
