@@ -343,8 +343,8 @@ angular.module("ngDraggable", [])
 
                     var hitTest = function(x, y) {
                         var bounds = element[0].getBoundingClientRect();// ngDraggable.getPrivOffset(element);
-                        x -= $document.body.scrollLeft + $document.documentElement.scrollLeft;
-                        y -= $document.body.scrollTop + $document.documentElement.scrollTop;
+                        x -= document.body.scrollLeft + document.documentElement.scrollLeft;
+                        y -= document.body.scrollTop + document.documentElement.scrollTop;
                         return  x >= bounds.left
                                 && x <= bounds.right
                                 && y <= bounds.bottom
