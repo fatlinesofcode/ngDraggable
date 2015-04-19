@@ -100,6 +100,11 @@ angular.module("ngDraggable", [])
                             return;
                         }
 
+                        if (evt.type == "mousedown" && evt.button != 0) {
+                            // Do not start dragging on right-click
+                            return;
+                        }
+
                         if(_hasTouch){
                             cancelPress();
                             _pressTimer = setTimeout(function(){
