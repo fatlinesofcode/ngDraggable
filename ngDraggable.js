@@ -37,6 +37,8 @@ angular.module("ngDraggable", [])
                     var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
                     var allowTransform = angular.isDefined(attrs.allowTransform) ? scope.$eval(attrs.allowTransform) : true;
 
+                    var getDragData = $parse(attrs.ngDragData);
+
                     // deregistration function for mouse move events in $rootScope triggered by jqLite trigger handler
                     var _deregisterRootMoveListener = angular.noop;
 
@@ -57,7 +59,6 @@ angular.module("ngDraggable", [])
                         scope.$on('$destroy', onDestroy);
                         scope.$watch(attrs.ngDrag, onEnableChange);
                         scope.$watch(attrs.ngCenterAnchor, onCenterAnchor);
-                        scope.$watch(attrs.ngDragData, onDragDataChange);
                         // wire up touch events
                         if (_dragHandle) {
                             // handle(s) specified, use those to initiate drag
@@ -72,9 +73,6 @@ angular.module("ngDraggable", [])
                     };
                     var onDestroy = function (enable) {
                         toggleListeners(false);
-                    };
-                    var onDragDataChange = function (newVal, oldVal) {
-                        _data = newVal;
                     };
                     var onEnableChange = function (newVal, oldVal) {
                         _dragEnabled = (newVal);
@@ -168,6 +166,7 @@ angular.module("ngDraggable", [])
                         evt.preventDefault();
 
                         if (!element.hasClass('dragging')) {
+                            _data = getDragData(scope);
                             element.addClass('dragging');
                             $rootScope.$broadcast('draggable:start', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data});
                         }
