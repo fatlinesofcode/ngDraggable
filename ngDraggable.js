@@ -360,6 +360,7 @@ angular.module("ngDraggable", [])
             };
         }])
         .directive('ngDragClone', ['$parse', '$timeout', 'ngDraggable', function ($parse, $timeout, ngDraggable) {
+            var _tx, _ty;
             return {
                 restrict: 'A',
                 link: function (scope, element, attrs) {
@@ -413,8 +414,8 @@ angular.module("ngDraggable", [])
                     var onDragMove = function(evt, obj) {
                         if(_allowClone) {
 
-                            _tx = obj.tx + _dragOffset.left;
-                            _ty = obj.ty + _dragOffset.top;
+                            _tx = obj.x - document.body.scrollLeft - (obj.element[0].offsetWidth/2);// + _dragOffset.left;
+                            _ty = obj.y - document.body.scrollTop - (obj.element[0].offsetHeight/2);// + _dragOffset.top;
 
                             moveElement(_tx, _ty);
                         }
