@@ -33,7 +33,7 @@ Draggable usage:
 * If the draggable is also clickable (ng-click, ng-dblclick) the script wont react.
 * You can define a drag-button as child with the attribute `ng-drag-handle`.
 
-```ng-drag-start``` and ```ng-drag-move``` is also available. Add to the ng-drop element.
+```ng-drag-start```, ```ng-drag-move``` and ```ng-drag-touch``` is also available. Add to the ng-drop element.
 ``ng-drag-stop`` can be used when you want to react to the user dragging an item and it wasn't dropped into the target container.
 
 ```draggable:start```, ```draggable:move``` and  ```draggable:end``` events are broadcast on drag actions.

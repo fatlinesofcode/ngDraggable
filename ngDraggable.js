@@ -250,6 +250,7 @@ angular.module("ngDraggable", [])
                     var onDragStartCallback = $parse(attrs.ngDragStart);
                     var onDragStopCallback = $parse(attrs.ngDragStop);
                     var onDragMoveCallback = $parse(attrs.ngDragMove);
+                    var onDragTouchCallback = $parse(attrs.ngDragTouch);
 
                     var initialize = function () {
                         toggleListeners(true);
@@ -284,8 +285,15 @@ angular.module("ngDraggable", [])
                         }
                     };
                     var onDragMove = function(evt, obj) {
-                        if(! _dropEnabled)return;
-                        isTouching(obj.x,obj.y,obj.element);
+                        if (! _dropEnabled) return;
+
+                        if (isTouching(obj.x,obj.y,obj.element)) {
+                            if (attrs.ngDragTouch) {
+                                $timeout(function(){
+                                    onDragTouchCallback(scope, {$data: obj.data, $event: obj});
+                                });
+                            }
+                        }
 
                         if (attrs.ngDragMove) {
                             $timeout(function(){
