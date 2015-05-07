@@ -34,7 +34,11 @@ angular.module("ngDraggable", [])
 
                     var _pressTimer = null;
 
+                    var _shortPress = false;
+                    var _shortPressOnce = false;
+
                     var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
+                    var onClickCallback = $parse(attrs.ngDragClick) || null;
                     var allowTransform = angular.isDefined(attrs.allowTransform) ? scope.$eval(attrs.allowTransform) : true;
 
                     var getDragData = $parse(attrs.ngDragData);
@@ -104,13 +108,17 @@ angular.module("ngDraggable", [])
                         }
 
                         if(_hasTouch){
+                            _shortPress = true;
+                            _shortPressOnce = false;
                             cancelPress();
                             _pressTimer = setTimeout(function(){
+                                _shortPress = false;
                                 cancelPress();
                                 onlongpress(evt);
                             },100);
                             $document.on(_moveEvents, cancelPress);
                             $document.on(_releaseEvents, cancelPress);
+                            element.on(_releaseEvents, onshortpress);
                         }else{
                             onlongpress(evt);
                         }
@@ -121,6 +129,22 @@ angular.module("ngDraggable", [])
                         clearTimeout(_pressTimer);
                         $document.off(_moveEvents, cancelPress);
                         $document.off(_releaseEvents, cancelPress);
+                    };
+
+                    var cancelClick = function() {
+                        _shortPress = false;
+                    };
+
+                    var onshortpress = function(evt) {
+                        if (!onClickCallback || !_shortPress || _shortPressOnce) return;
+
+                        _shortPressOnce = true;
+
+                        evt.preventDefault();
+
+                        scope.$apply(function () {
+                            onClickCallback(scope);
+                        });
                     };
 
                     var onlongpress = function(evt) {

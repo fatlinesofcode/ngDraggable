@@ -24,7 +24,7 @@ angular.module('app', ['ngDraggable']);
 
 Draggable usage:
 ```html
-<div ng-drag="true" ng-drag-data="{obj}" ng-drag-success="onDragComplete($data,$event)" ng-center-anchor="true">
+<div ng-drag="true" ng-drag-data="{obj}" ng-drag-success="onDragComplete($data,$event)" ng-drag-click="onShortPress()" ng-center-anchor="true">
   Draggable div
 </div>
 ```
