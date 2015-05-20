@@ -8,7 +8,13 @@ angular.module("ngDraggable", [])
 
             var scope = this;
             scope.inputEvent = function(event) {
-                return angular.isDefined(event.touches) ? event.touches[0] : event;
+                if (angular.isDefined(event.touches)) {
+                    return event.touches[0];
+                }
+                else if (angular.isDefined(event.originalEvent.touches)) {
+                    return event.originalEvent.touches[0];
+                }
+                return event;
             };
 
         }])
