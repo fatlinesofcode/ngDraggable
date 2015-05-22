@@ -503,8 +503,7 @@ angular.module("ngDraggable", [])
                     verticalScroll: attrs.verticalScroll || true,
                     horizontalScroll: attrs.horizontalScroll || true,
                     activationDistance: attrs.activationDistance || 75,
-                    scrollDistance: attrs.scrollDistance || 50,
-                    scrollInterval: attrs.scrollInterval || 250
+                    scrollDistance: attrs.scrollDistance || 15
                 };
 
 
@@ -527,10 +526,10 @@ angular.module("ngDraggable", [])
                         var args = Array.prototype.slice.call(arguments);
                         if(animationIsOn) {
                             reqAnimFrame(function () {
-                                $timeout(function () {
-                                    callback.apply(null, args);
-                                    nextFrame(callback);
-                                }, config.scrollInterval);
+                              $rootScope.$apply(function () {
+                                callback.apply(null, args);
+                                nextFrame(callback);
+                              });
                             })
                         }
                     }
