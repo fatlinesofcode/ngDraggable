@@ -507,8 +507,35 @@ angular.module("ngDraggable", [])
                     scrollInterval: attrs.scrollInterval || 250
                 };
 
+
+                var reqAnimFrame = (function() {
+                    return window.requestAnimationFrame ||
+                        window.webkitRequestAnimationFrame ||
+                        window.mozRequestAnimationFrame ||
+                        window.oRequestAnimationFrame ||
+                        window.msRequestAnimationFrame ||
+                        function( /* function FrameRequestCallback */ callback, /* DOMElement Element */ element ) {
+                            window.setTimeout(callback, 1000 / 60);
+                        };
+                })();
+
+                var animationIsOn = false;
                 var createInterval = function() {
-                    intervalPromise = $interval(function() {
+                    animationIsOn = true;
+
+                    function nextFrame(callback) {
+                        var args = Array.prototype.slice.call(arguments);
+                        if(animationIsOn) {
+                            reqAnimFrame(function () {
+                                $timeout(function () {
+                                    callback.apply(null, args);
+                                    nextFrame(callback);
+                                }, config.scrollInterval);
+                            })
+                        }
+                    }
+
+                    nextFrame(function() {
                         if (!lastMouseEvent) return;
 
                         var viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -541,6 +568,8 @@ angular.module("ngDraggable", [])
                             }
                         }
 
+
+
                         if (scrollX !== 0 || scrollY !== 0) {
                             // Record the current scroll position.
                             var currentScrollLeft = ($window.pageXOffset || $document[0].documentElement.scrollLeft);
@@ -558,36 +587,31 @@ angular.module("ngDraggable", [])
 
                             element.css('transform', elementTransform);
 
-                            // On the next digest cycle, trigger a mousemove event equal to the amount we scrolled so
-                            // the element moves correctly.
-                            $timeout(function() {
-                                lastMouseEvent.pageX += horizontalScrollAmount;
-                                lastMouseEvent.pageY += verticalScrollAmount;
+                            lastMouseEvent.pageX += horizontalScrollAmount;
+                            lastMouseEvent.pageY += verticalScrollAmount;
 
-                                $rootScope.$emit('draggable:_triggerHandlerMove', lastMouseEvent);
-                            });
+                            $rootScope.$emit('draggable:_triggerHandlerMove', lastMouseEvent);
                         }
 
-                    }, config.scrollInterval);
+                    });
                 };
 
                 var clearInterval = function() {
-                    $interval.cancel(intervalPromise);
-                    intervalPromise = null;
+                    animationIsOn = false;
                 };
 
                 scope.$on('draggable:start', function(event, obj) {
                     // Ignore this event if it's not for this element.
                     if (obj.element[0] !== element[0]) return;
 
-                    if (!intervalPromise) createInterval();
+                    if (!animationIsOn) createInterval();
                 });
 
                 scope.$on('draggable:end', function(event, obj) {
                     // Ignore this event if it's not for this element.
                     if (obj.element[0] !== element[0]) return;
 
-                    if (intervalPromise) clearInterval();
+                    if (animationIsOn) clearInterval();
                 });
 
                 scope.$on('draggable:move', function(event, obj) {
