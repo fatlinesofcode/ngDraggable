@@ -543,8 +543,8 @@ angular.module("ngDraggable", [])
 
                         if (scrollX !== 0 || scrollY !== 0) {
                             // Record the current scroll position.
-                            var currentScrollLeft = $document[0].documentElement.scrollLeft;
-                            var currentScrollTop = $document[0].documentElement.scrollTop;
+                            var currentScrollLeft = ($window.pageXOffset || $document[0].documentElement.scrollLeft);
+                            var currentScrollTop = ($window.pageYOffset || $document[0].documentElement.scrollTop);
 
                             // Remove the transformation from the element, scroll the window by the scroll distance
                             // record how far we scrolled, then reapply the element transformation.
@@ -553,8 +553,8 @@ angular.module("ngDraggable", [])
 
                             $window.scrollBy(scrollX, scrollY);
 
-                            var horizontalScrollAmount = $document[0].documentElement.scrollLeft - currentScrollLeft;
-                            var verticalScrollAmount =  $document[0].documentElement.scrollTop - currentScrollTop;
+                            var horizontalScrollAmount = ($window.pageXOffset || $document[0].documentElement.scrollLeft) - currentScrollLeft;
+                            var verticalScrollAmount =  ($window.pageYOffset || $document[0].documentElement.scrollTop) - currentScrollTop;
 
                             element.css('transform', elementTransform);
 
