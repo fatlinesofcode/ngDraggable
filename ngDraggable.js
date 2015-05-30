@@ -509,12 +509,38 @@ angular.module("ngDraggable", [])
                     verticalScroll: attrs.verticalScroll || true,
                     horizontalScroll: attrs.horizontalScroll || true,
                     activationDistance: attrs.activationDistance || 75,
-                    scrollDistance: attrs.scrollDistance || 50,
-                    scrollInterval: attrs.scrollInterval || 250
+                    scrollDistance: attrs.scrollDistance || 15
                 };
 
+
+                var reqAnimFrame = (function() {
+                    return window.requestAnimationFrame ||
+                        window.webkitRequestAnimationFrame ||
+                        window.mozRequestAnimationFrame ||
+                        window.oRequestAnimationFrame ||
+                        window.msRequestAnimationFrame ||
+                        function( /* function FrameRequestCallback */ callback, /* DOMElement Element */ element ) {
+                            window.setTimeout(callback, 1000 / 60);
+                        };
+                })();
+
+                var animationIsOn = false;
                 var createInterval = function() {
-                    intervalPromise = $interval(function() {
+                    animationIsOn = true;
+
+                    function nextFrame(callback) {
+                        var args = Array.prototype.slice.call(arguments);
+                        if(animationIsOn) {
+                            reqAnimFrame(function () {
+                              $rootScope.$apply(function () {
+                                callback.apply(null, args);
+                                nextFrame(callback);
+                              });
+                            })
+                        }
+                    }
+
+                    nextFrame(function() {
                         if (!lastMouseEvent) return;
 
                         var viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
@@ -547,10 +573,12 @@ angular.module("ngDraggable", [])
                             }
                         }
 
+
+
                         if (scrollX !== 0 || scrollY !== 0) {
                             // Record the current scroll position.
-                            var currentScrollLeft = $document[0].documentElement.scrollLeft;
-                            var currentScrollTop = $document[0].documentElement.scrollTop;
+                            var currentScrollLeft = ($window.pageXOffset || $document[0].documentElement.scrollLeft);
+                            var currentScrollTop = ($window.pageYOffset || $document[0].documentElement.scrollTop);
 
                             // Remove the transformation from the element, scroll the window by the scroll distance
                             // record how far we scrolled, then reapply the element transformation.
@@ -559,41 +587,36 @@ angular.module("ngDraggable", [])
 
                             $window.scrollBy(scrollX, scrollY);
 
-                            var horizontalScrollAmount = $document[0].documentElement.scrollLeft - currentScrollLeft;
-                            var verticalScrollAmount =  $document[0].documentElement.scrollTop - currentScrollTop;
+                            var horizontalScrollAmount = ($window.pageXOffset || $document[0].documentElement.scrollLeft) - currentScrollLeft;
+                            var verticalScrollAmount =  ($window.pageYOffset || $document[0].documentElement.scrollTop) - currentScrollTop;
 
                             element.css('transform', elementTransform);
 
-                            // On the next digest cycle, trigger a mousemove event equal to the amount we scrolled so
-                            // the element moves correctly.
-                            $timeout(function() {
-                                lastMouseEvent.pageX += horizontalScrollAmount;
-                                lastMouseEvent.pageY += verticalScrollAmount;
+                            lastMouseEvent.pageX += horizontalScrollAmount;
+                            lastMouseEvent.pageY += verticalScrollAmount;
 
-                                $rootScope.$emit('draggable:_triggerHandlerMove', lastMouseEvent);
-                            });
+                            $rootScope.$emit('draggable:_triggerHandlerMove', lastMouseEvent);
                         }
 
-                    }, config.scrollInterval);
+                    });
                 };
 
                 var clearInterval = function() {
-                    $interval.cancel(intervalPromise);
-                    intervalPromise = null;
+                    animationIsOn = false;
                 };
 
                 scope.$on('draggable:start', function(event, obj) {
                     // Ignore this event if it's not for this element.
                     if (obj.element[0] !== element[0]) return;
 
-                    if (!intervalPromise) createInterval();
+                    if (!animationIsOn) createInterval();
                 });
 
                 scope.$on('draggable:end', function(event, obj) {
                     // Ignore this event if it's not for this element.
                     if (obj.element[0] !== element[0]) return;
 
-                    if (intervalPromise) clearInterval();
+                    if (animationIsOn) clearInterval();
                 });
 
                 scope.$on('draggable:move', function(event, obj) {
