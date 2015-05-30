@@ -51,7 +51,13 @@ angular.module("ngDraggable", [])
                     var initialize = function () {
                         element.attr('draggable', 'false'); // prevent native drag
                         // check to see if drag handle(s) was specified
-                        var dragHandles = element.find('[ng-drag-handle]');
+                        // if querySelectorAll is available, we use this instead of find
+                        // as JQLite find is limited to tagnames
+                        if (element[0].querySelectorAll) {
+                            var dragHandles = angular.element(element[0].querySelectorAll('[ng-drag-handle]'));
+                        } else {
+                            var dragHandles = element.find('[ng-drag-handle]');
+                        }
                         if (dragHandles.length) {
                             _dragHandle = dragHandles;
                         }
