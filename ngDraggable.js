@@ -43,7 +43,7 @@ angular.module("ngDraggable", [])
                     var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
                     var allowTransform = angular.isDefined(attrs.allowTransform) ? scope.$eval(attrs.allowTransform) : true;
 
-		    // Adjust scroll offset if drag element is in a position fixed div and we scroll while dragging
+                    // Adjust scroll offset if drag element is in a position fixed div and we scroll while dragging
                     var scrollOffset = angular.isDefined(attrs.scrollOffset) ? scope.$eval(attrs.scrollOffset) : false;
                     scrollOffset = scrollOffset && !allowTransform;
 
@@ -198,7 +198,7 @@ angular.module("ngDraggable", [])
                             _ty = _my - _mry - _dragOffset.top;
                         }
 
-			// Adjust offset based on scroll
+                        // Adjust offset based on scroll
                         if (scrollOffset) {
                             if (_dragOffset.top === 0) {
                                 _ty = _ty - document.body.scrollTop;
