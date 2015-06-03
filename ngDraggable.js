@@ -43,6 +43,10 @@ angular.module("ngDraggable", [])
                     var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
                     var allowTransform = angular.isDefined(attrs.allowTransform) ? scope.$eval(attrs.allowTransform) : true;
 
+		    // Adjust scroll offset if drag element is in a position fixed div and we scroll while dragging
+                    var scrollOffset = angular.isDefined(attrs.scrollOffset) ? scope.$eval(attrs.scrollOffset) : false;
+                    scrollOffset = scrollOffset && !allowTransform;
+
                     var getDragData = $parse(attrs.ngDragData);
 
                     // deregistration function for mouse move events in $rootScope triggered by jqLite trigger handler
@@ -141,7 +145,7 @@ angular.module("ngDraggable", [])
 
                         offset = element[0].getBoundingClientRect();
                         if(allowTransform)
-                        _dragOffset = offset;
+                            _dragOffset = offset;
                         else{
                             _dragOffset = {left:document.body.scrollLeft, top:document.body.scrollTop};
                         }
@@ -192,6 +196,15 @@ angular.module("ngDraggable", [])
                         } else {
                             _tx = _mx - _mrx - _dragOffset.left;
                             _ty = _my - _mry - _dragOffset.top;
+                        }
+
+			// Adjust offset based on scroll
+                        if (scrollOffset) {
+                            if (_dragOffset.top === 0) {
+                                _ty = _ty - document.body.scrollTop;
+                            } else if (_dragOffset.top > 0) {
+                                _ty = _ty - document.body.scrollTop + (2 * _dragOffset.top);
+                            }
                         }
 
                         moveElement(_tx, _ty);
