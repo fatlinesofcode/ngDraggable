@@ -147,7 +147,7 @@ angular.module("ngDraggable", [])
                         if(allowTransform)
                             _dragOffset = offset;
                         else{
-                            _dragOffset = {left:document.body.scrollLeft, top:document.body.scrollTop};
+                            _dragOffset = {left:document.body.scrollLeft, top: ($window.pageYOffset || document.body.scrollTop)};
                         }
 
 
@@ -201,9 +201,9 @@ angular.module("ngDraggable", [])
                         // Adjust offset based on scroll
                         if (scrollOffset) {
                             if (_dragOffset.top === 0) {
-                                _ty = _ty - document.body.scrollTop;
+                                _ty = _ty - ($window.pageYOffset || document.body.scrollTop);
                             } else if (_dragOffset.top > 0) {
-                                _ty = _ty - document.body.scrollTop + (2 * _dragOffset.top);
+                                _ty = _ty - ($window.pageYOffset || document.body.scrollTop) + (2 * _dragOffset.top);
                             }
                         }
 
