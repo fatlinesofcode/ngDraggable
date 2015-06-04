@@ -11,7 +11,7 @@ angular.module("ngDraggable", [])
                 if (angular.isDefined(event.touches)) {
                     return event.touches[0];
                 }
-                else if (angular.isDefined(event.originalEvent.touches)) {
+                else if (angular.isDefined(event.originalEvent) && angular.isDefined(event.originalEvent.touches)) {
                     return event.originalEvent.touches[0];
                 }
                 return event;
