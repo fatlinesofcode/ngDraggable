@@ -38,6 +38,17 @@ Draggable usage:
 
 ```draggable:start```, ```draggable:move``` and  ```draggable:end``` events are broadcast on drag actions.
 
+Disable drag:
+
+You can disable drag on specific elements by adding the following attribute: `ng-cancel-drag`.
+```html
+<div ng-drag="true" ng-drag-data="{obj}" ng-drag-success="onDragComplete($data,$event)" ng-center-anchor="true">
+  Draggable div
+   <select ng-cancel-drag>
+     <option>undraggable</option>
+   </select>
+</div>
+```
 
 Drop area usage:
 ```html
