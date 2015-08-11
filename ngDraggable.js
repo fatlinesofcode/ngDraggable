@@ -118,11 +118,11 @@ angular.module("ngDraggable", [])
 
                         if(_hasTouch){
                             cancelPress();
-                            $rootScope.$broadcast('draggable:will_start', {event:evt});
                             _pressTimer = setTimeout(
                                 function(){
                                     cancelPress();
                                     onlongpress(evt);
+                                    $rootScope.$broadcast('draggable:will_start', {event:evt});
                                 },
                                 (angular.isDefined(angular.element(evt.target).attr("ng-instant-drag")) ? 1 : 300)
                             );
