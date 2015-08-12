@@ -41,7 +41,11 @@ angular.module("ngDraggable", [])
 
                     var _pressTimer = null;
 
+                    var _shortPress = false;
+                    var _shortPressOnce = false;
+
                     var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
+                    var onClickCallback = $parse(attrs.ngDragClick) || null;
                     var allowTransform = angular.isDefined(attrs.allowTransform) ? scope.$eval(attrs.allowTransform) : true;
 
                     var getDragData = $parse(attrs.ngDragData);
@@ -117,13 +121,17 @@ angular.module("ngDraggable", [])
                         }
 
                         if(_hasTouch){
+                            _shortPress = true;
+                            _shortPressOnce = false;
                             cancelPress();
                             _pressTimer = setTimeout(function(){
+                                _shortPress = false;
                                 cancelPress();
                                 onlongpress(evt);
                             },100);
                             $document.on(_moveEvents, cancelPress);
                             $document.on(_releaseEvents, cancelPress);
+                            element.on(_releaseEvents, onshortpress);
                         }else{
                             onlongpress(evt);
                         }
@@ -134,6 +142,22 @@ angular.module("ngDraggable", [])
                         clearTimeout(_pressTimer);
                         $document.off(_moveEvents, cancelPress);
                         $document.off(_releaseEvents, cancelPress);
+                    };
+
+                    var cancelClick = function() {
+                        _shortPress = false;
+                    };
+
+                    var onshortpress = function(evt) {
+                        if (!onClickCallback || !_shortPress || _shortPressOnce) return;
+
+                        _shortPressOnce = true;
+
+                        evt.preventDefault();
+
+                        scope.$apply(function () {
+                            onClickCallback(scope);
+                        });
                     };
 
                     var onlongpress = function(evt) {
@@ -263,6 +287,7 @@ angular.module("ngDraggable", [])
                     var onDragStartCallback = $parse(attrs.ngDragStart);
                     var onDragStopCallback = $parse(attrs.ngDragStop);
                     var onDragMoveCallback = $parse(attrs.ngDragMove);
+                    var onDragTouchCallback = $parse(attrs.ngDragTouch);
 
                     var initialize = function () {
                         toggleListeners(true);
@@ -297,8 +322,15 @@ angular.module("ngDraggable", [])
                         }
                     };
                     var onDragMove = function(evt, obj) {
-                        if(! _dropEnabled)return;
-                        isTouching(obj.x,obj.y,obj.element);
+                        if (! _dropEnabled) return;
+
+                        if (isTouching(obj.x,obj.y,obj.element)) {
+                            if (attrs.ngDragTouch) {
+                                $timeout(function(){
+                                    onDragTouchCallback(scope, {$data: obj.data, $event: obj});
+                                });
+                            }
+                        }
 
                         if (attrs.ngDragMove) {
                             $timeout(function(){
