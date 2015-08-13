@@ -5,19 +5,39 @@
 angular.module("ngDraggable", [])
         .service('ngDraggable', [function() {
 
+            'use strict';
 
-            var scope = this;
-            scope.inputEvent = function(event) {
-                if (angular.isDefined(event.touches)) {
-                    return event.touches[0];
-                }
-                //Checking both is not redundent. If only check if touches isDefined, angularjs isDefnied will return error and stop the remaining scripty if event.originalEvent is not defined.
-                else if (angular.isDefined(event.originalEvent) && angular.isDefined(event.originalEvent.touches)) {
-                    return event.originalEvent.touches[0];
-                }
-                return event;
+            return {
+                getEventProp : getEventProp,
+                getObjProp   : getObjProp
+            }
+
+            ////////////////////////////////////////////
+
+            function getEvent(event) {
+                return angular.isDefined(event.touches)
+                    ? event.touches[0]
+                    // Checking both is not redundant. If only check if touches isDefined, angularjs isDefnied will
+                    // return error and stop the remaining script if event.originalEvent is not defined.
+                    : (angular.isDefined(event.originalEvent) &&
+                angular.isDefined(event.originalEvent.touches) &&
+                event.originalEvent.touches.length != 0)
+                    ? event.originalEvent.touches[0]
+                    : event;
+            }
+
+            function getEventProp(event, prop) {
+                var evt = getEvent(event);
+
+                return evt[prop] || evt.originalEvent[prop];
             };
 
+            function getObjProp(obj, prop) {
+                var objProp = (prop === 'pageX') ? obj.x : obj.y,
+                    evt = getEvent(obj.event);
+
+                return objProp || evt[prop] || evt.originalEvent[prop];
+            };
         }])
         .directive('ngDrag', ['$rootScope', '$parse', '$document', '$window', 'ngDraggable', function ($rootScope, $parse, $document, $window, ngDraggable) {
             return {
@@ -151,8 +171,8 @@ angular.module("ngDraggable", [])
                         element.centerX = element[0].offsetWidth / 2;
                         element.centerY = element[0].offsetHeight / 2;
 
-                        _mx = ngDraggable.inputEvent(evt).pageX;//ngDraggable.getEventProp(evt, 'pageX');
-                        _my = ngDraggable.inputEvent(evt).pageY;//ngDraggable.getEventProp(evt, 'pageY');
+                        _mx = ngDraggable.getEventProp(evt, 'pageX');
+                        _my = ngDraggable.getEventProp(evt, 'pageY');
                         _mrx = _mx - offset.left;
                         _mry = _my - offset.top;
                          if (_centerAnchor) {
@@ -184,8 +204,8 @@ angular.module("ngDraggable", [])
                             $rootScope.$broadcast('draggable:start', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data});
                         }
 
-                        _mx = ngDraggable.inputEvent(evt).pageX;//ngDraggable.getEventProp(evt, 'pageX');
-                        _my = ngDraggable.inputEvent(evt).pageY;//ngDraggable.getEventProp(evt, 'pageY');
+                        _mx = ngDraggable.getEventProp(evt, 'pageX');
+                        _my = ngDraggable.getEventProp(evt, 'pageY');
 
                         if (_centerAnchor) {
                             _tx = _mx - element.centerX - _dragOffset.left;
@@ -231,13 +251,13 @@ angular.module("ngDraggable", [])
                     var moveElement = function (x, y) {
                         if(allowTransform) {
                             element.css({
-                                transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, ' + x + ', ' + y + ', 0, 1)',
+                                'transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, ' + x + ', ' + y + ', 0, 1)',
                                 'z-index': 99999,
                                 '-webkit-transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, ' + x + ', ' + y + ', 0, 1)',
                                 '-ms-transform': 'matrix(1, 0, 0, 1, ' + x + ', ' + y + ')'
                             });
                         }else{
-                            element.css({'left':x+'px','top':y+'px', 'position':'fixed'});
+                            element.css({'left':x + 'px','top':y + 'px', 'position':'fixed'});
                         }
                     };
                     initialize();
@@ -288,7 +308,7 @@ angular.module("ngDraggable", [])
                     };
                     var onDragStart = function(evt, obj) {
                         if(! _dropEnabled)return;
-                        isTouching(obj.x,obj.y,obj.element);
+                        isTouching(obj);
 
                         if (attrs.ngDragStart) {
                             $timeout(function(){
@@ -298,7 +318,7 @@ angular.module("ngDraggable", [])
                     };
                     var onDragMove = function(evt, obj) {
                         if(! _dropEnabled)return;
-                        isTouching(obj.x,obj.y,obj.element);
+                        isTouching(obj);
 
                         if (attrs.ngDragMove) {
                             $timeout(function(){
@@ -315,7 +335,7 @@ angular.module("ngDraggable", [])
                             updateDragStyles(false, obj.element);
                             return;
                         }
-                        if (isTouching(obj.x, obj.y, obj.element)) {
+                        if (isTouching(obj)) {
                             // call the ngDraggable ngDragSuccess element callback
                            if(obj.callback){
                                 obj.callback(obj);
@@ -337,13 +357,13 @@ angular.module("ngDraggable", [])
                         updateDragStyles(false, obj.element);
                     };
 
-                    var isTouching = function(mouseX, mouseY, dragElement) {
-                        var touching= hitTest(mouseX, mouseY);
+                    var isTouching = function(obj) {
+                        var touching= hitTest(obj);
                         scope.isTouching = touching;
                         if(touching){
                             _lastDropTouch = element;
                         }
-                        updateDragStyles(touching, dragElement);
+                        updateDragStyles(touching, obj.element);
                         return touching;
                     };
 
@@ -358,8 +378,11 @@ angular.module("ngDraggable", [])
                         }
                     };
 
-                    var hitTest = function(x, y) {
-                        var bounds = element[0].getBoundingClientRect();// ngDraggable.getPrivOffset(element);
+                    var hitTest = function(obj) {
+                        var bounds = element[0].getBoundingClientRect(),// ngDraggable.getPrivOffset(element);
+                            x = ngDraggable.getObjProp(obj, 'pageX'),
+                            y = ngDraggable.getObjProp(obj, 'pageY');
+
                         x -= $document[0].body.scrollLeft + $document[0].documentElement.scrollLeft;
                         y -= $document[0].body.scrollTop + $document[0].documentElement.scrollTop;
                         return  x >= bounds.left
@@ -443,9 +466,11 @@ angular.module("ngDraggable", [])
                     };
                     var moveElement = function(x,y) {
                         element.css({
-                            transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)', 'z-index': 99999, 'visibility': 'visible',
-                            '-webkit-transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, '+x+', '+y+', 0, 1)',
-                            '-ms-transform': 'matrix(1, 0, 0, 1, '+x+', '+y+')'
+                            'transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, ' + x + ', ' + y + ', 0, 1)',
+                            'z-index': 99999,
+                            'visibility': 'visible',
+                            '-webkit-transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, ' + x + ', ' + y + ', 0, 1)',
+                            '-ms-transform': 'matrix(1, 0, 0, 1, ' + x + ', ' + y + ')'
                             //,margin: '0'  don't monkey with the margin,
                         });
                     };
