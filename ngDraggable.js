@@ -501,6 +501,14 @@ angular.module("ngDraggable", [])
             restrict: 'A',
             link: function (scope, element, attrs) {
                 element.find('*').attr('ng-cancel-drag', 'ng-cancel-drag');
+
+                // for the case the content of ng-cancel-drag is dynamic...
+                scope.$watch(function () {
+                        return element[0].childNodes.length;
+                    },
+                    function (oldValue, newValue) {
+                        element.find('*:not([ng-cancel-drag])').attr('ng-cancel-drag', 'ng-cancel-drag');
+                    });
             }
         };
     }])
