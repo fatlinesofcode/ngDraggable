@@ -24,6 +24,8 @@ angular.module("ngDraggable", [])
                 restrict: 'A',
                 link: function (scope, element, attrs) {
                     scope.value = attrs.ngDrag;
+                    //Default scaling to 1 none is provided
+                    var _scale = attrs.ngScale || 1;
                     var offset,_centerAnchor=false,_mx,_my,_tx,_ty,_mrx,_mry;
                     var _hasTouch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
                     var _pressEvents = 'touchstart mousedown';
@@ -231,10 +233,10 @@ angular.module("ngDraggable", [])
                     var moveElement = function (x, y) {
                         if(allowTransform) {
                             element.css({
-                                transform: 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, ' + x + ', ' + y + ', 0, 1)',
+                                transform: 'matrix3d('+_scale+', 0, 0, 0, 0, '+_scale+', 0, 0, 0, 0, 1, 0, ' + x + ', ' + y + ', 0, 1)',
                                 'z-index': 99999,
-                                '-webkit-transform': 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, ' + x + ', ' + y + ', 0, 1)',
-                                '-ms-transform': 'matrix(1, 0, 0, 1, ' + x + ', ' + y + ')'
+                                '-webkit-transform': 'matrix3d('+_scale+', 0, 0, 0, 0, '+_scale+', 0, 0, 0, 0, 1, 0, ' + x + ', ' + y + ', 0, 1)',
+                                '-ms-transform': 'matrix('+_scale+', 0, 0, '+_scale+', ' + x + ', ' + y + ')'
                             });
                         }else{
                             element.css({'left':x+'px','top':y+'px', 'position':'fixed'});
