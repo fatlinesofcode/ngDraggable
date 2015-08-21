@@ -29,7 +29,6 @@ Draggable usage:
 </div>
 ```
 
-* `ng-center-anchor` is optional. If not specified, it defaults to false.
 * If the draggable is also clickable (ng-click, ng-dblclick) the script wont react.
 * You can define a drag-button as child with the attribute `ng-drag-handle`.
 
@@ -58,6 +57,16 @@ app.controller('MainCtrl', function ($scope) {
     }
  };
 ```
+
+## Options
+
+`ng-center-anchor` : Optional. Default value :  `false`
+- True : move element on center mouse
+- False: move element on the position of the click mouse
+
+`allow-transform` : Optional. Default value :  `true`
+- True  : use transform css.
+- False : use position fixed. Tips for move an item to the top element "overflow:hidden"
 
 ## Examples
 [`Drag and drop`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example.html).
