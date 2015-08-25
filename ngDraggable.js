@@ -105,7 +105,8 @@ angular.module("ngDraggable", [])
                      * On touch devices as a small delay so as not to prevent native window scrolling
                      */
                     var onpress = function(evt) {
-                        if(! _dragEnabled)return;
+			if(! _dragEnabled)return;
+			evt.stopImmediatePropagation();
 
                         if (isClickableElement(evt)) {
                             return;
