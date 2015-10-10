@@ -40,6 +40,7 @@ angular.module("ngDraggable", [])
                 var _dragEnabled = false;
 
                 var _pressTimer = null;
+                var pressTimeout = attrs.pressTimeout || 100;
 
                 var onDragStartCallback = $parse(attrs.ngDragStart) || null;
                 var onDragStopCallback = $parse(attrs.ngDragStop) || null;
@@ -123,7 +124,7 @@ angular.module("ngDraggable", [])
                         _pressTimer = setTimeout(function(){
                             cancelPress();
                             onlongpress(evt);
-                        },100);
+                        }, pressTimeout);
                         $document.on(_moveEvents, cancelPress);
                         $document.on(_releaseEvents, cancelPress);
                     }else{
