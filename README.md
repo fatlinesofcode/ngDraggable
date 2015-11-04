@@ -6,11 +6,10 @@ Drag and drop module for Angular JS with support for touch devices. [`demo`](htt
 ### Usage:
 
 - Install: `bower install ngDraggable`
-- Add `jquery`, `angular` and `ngDraggable` to your code:
+- Add `angular` and `ngDraggable` to your code:
 
 ```html
-<script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
-<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.23/angular.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
 <script src="ngDraggable.js"></script>
 ```
 
@@ -29,7 +28,16 @@ Draggable usage:
   Draggable div
 </div>
 ```
-Note: ng-center-anchor is optional. If not specified, it defaults to false.
+
+* `ng-center-anchor` is optional. If not specified, it defaults to false.
+* If the draggable is also clickable (ng-click, ng-dblclick) the script wont react.
+* You can define a drag-button as child with the attribute `ng-drag-handle`.
+
+```ng-drag-start``` and ```ng-drag-move``` is also available. Add to the ng-drop element.
+``ng-drag-stop`` can be used when you want to react to the user dragging an item and it wasn't dropped into the target container.
+
+```draggable:start```, ```draggable:move``` and  ```draggable:end``` events are broadcast on drag actions.
+
 
 Drop area usage:
 ```html
@@ -59,3 +67,6 @@ app.controller('MainCtrl', function ($scope) {
 [`Cloning`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example-clone.html).
 
 [`Canceling`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example-cancel.html).
+
+## Pull requests
+We welcome pull requests but please check that all the examples still work if you modified the source base. There have been serveral PRs recently that broke core functionality. If you are feeling really keen you could include some protractor test cases in your PR.
