@@ -309,7 +309,7 @@ angular.module("ngDraggable", [])
 
                     if (!enable) return;
                     // add listeners.
-                    scope.$watch(attrs.ngDrop, onEnableChange);
+                    scope.$watch(function () { return element.attr('ng-drop'); }, onEnableChange);
                     scope.$on('$destroy', onDestroy);
                     scope.$on('draggable:start', onDragStart);
                     scope.$on('draggable:move', onDragMove);
@@ -320,7 +320,7 @@ angular.module("ngDraggable", [])
                     toggleListeners(false);
                 };
                 var onEnableChange = function (newVal, oldVal) {
-                    _dropEnabled = newVal;
+                    _dropEnabled = newVal ? true : false;
                 };
                 var onDragStart = function (evt, obj) {
                     if (!_dropEnabled) return;
