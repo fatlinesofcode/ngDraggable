@@ -1,0 +1,23 @@
+{
+  "name": "ng-draggable",
+  "version": "1.0.0",
+  "description": "Drag and drop module for Angular JS",
+  "main": "ngDraggable.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fatlinesofcode/ngDraggable.git"
+  },
+  "keywords": [
+    "draggable",
+    "angularjs"
+  ],
+  "author": "Philip Andrews",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fatlinesofcode/ngDraggable/issues"
+  },
+  "homepage": "https://github.com/fatlinesofcode/ngDraggable#readme"
+}
