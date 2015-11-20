@@ -516,6 +516,7 @@ angular.module("ngDraggable", [])
     .directive('ngCancelDrag', [function () {
         return {
             restrict: 'A',
+            priority: 1,
             link: function (scope, element, attrs) {
                 element.find('*').attr('ng-cancel-drag', 'ng-cancel-drag');
             }
