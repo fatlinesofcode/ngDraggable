@@ -359,6 +359,9 @@ angular.module("ngDraggable", [])
           scope.isTouching = touching;
           if (touching) {
             _lastDropTouch = element;
+            element.triggerHandler('mouseenter');
+          } else {
+            element.triggerHandler('mouseleave');
           }
           updateDragStyles(touching, dragElement);
           return touching;
