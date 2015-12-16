@@ -1,0 +1,19 @@
+{
+  "name": "ngdraggable",
+  "version": "1.0.0",
+  "description": "ngDraggable ===========",
+  "main": "ngDraggable.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kucukkanat/ngDraggable.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kucukkanat/ngDraggable/issues"
+  },
+  "homepage": "https://github.com/kucukkanat/ngDraggable#readme"
+}
