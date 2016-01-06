@@ -34,6 +34,7 @@ angular.module("ngDraggable", [])
                 // to identify the element in order to prevent getting superflous events when a single element has both drag and drop directives on it.
                 var _myid = scope.$id;
                 var _data = null;
+                var _scale = null;
 
                 var _dragOffset = null;
 
@@ -47,6 +48,7 @@ angular.module("ngDraggable", [])
                 var allowTransform = angular.isDefined(attrs.allowTransform) ? scope.$eval(attrs.allowTransform) : true;
 
                 var getDragData = $parse(attrs.ngDragData);
+                var getDragScale = $parse(attrs.ngDragScale) || null;
 
                 // deregistration function for mouse move events in $rootScope triggered by jqLite trigger handler
                 var _deregisterRootMoveListener = angular.noop;
@@ -182,6 +184,7 @@ angular.module("ngDraggable", [])
 
                     if (!element.hasClass('dragging')) {
                         _data = getDragData(scope);
+                        _scale = getDragScale(scope) || 1;
                         element.addClass('dragging');
                         $rootScope.$broadcast('draggable:start', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data});
 
@@ -203,7 +206,7 @@ angular.module("ngDraggable", [])
                         _ty = _my - _mry - _dragOffset.top;
                     }
 
-                    moveElement(_tx, _ty);
+                    moveElement(_tx / _scale, _ty / _scale);
 
                     $rootScope.$broadcast('draggable:move', { x: _mx, y: _my, tx: _tx, ty: _ty, event: evt, element: element, data: _data, uid: _myid, dragOffset: _dragOffset });
                 };
