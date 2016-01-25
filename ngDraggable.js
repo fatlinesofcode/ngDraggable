@@ -393,7 +393,7 @@ angular.module("ngDraggable", [])
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
-                var img, _allowClone=true;
+                var img, _allowClone=true, _tx, _ty;
                 var _dragOffset = null;
                 scope.clonedData = {};
                 var initialize = function () {
