@@ -574,11 +574,19 @@ angular.module("ngDraggable", [])
 
                         if (config.horizontalScroll) {
                             // If horizontal scrolling is active.
-                            if (lastMouseEvent.clientX < config.activationDistance) {
+
+                            // lastMouseEvent.clientX is undefined when dealing with a touch device, resulting in
+                            // no scrolling when dragging an item to the bottom of the screen
+                            // Seen on Chrome 47.0.2526.111
+                            var clientX = lastMouseEvent.clientX;
+                            if (angular.isUndefined(lastMouseEvent.clientX))
+                              clientX = lastMouseEvent.touches[0].clientX;
+
+                            if (clientX < config.activationDistance) {
                                 // If the mouse is on the left of the viewport within the activation distance.
                                 scrollX = -config.scrollDistance;
                             }
-                            else if (lastMouseEvent.clientX > viewportWidth - config.activationDistance) {
+                            else if (clientX > viewportWidth - config.activationDistance) {
                                 // If the mouse is on the right of the viewport within the activation distance.
                                 scrollX = config.scrollDistance;
                             }
@@ -586,11 +594,19 @@ angular.module("ngDraggable", [])
 
                         if (config.verticalScroll) {
                             // If vertical scrolling is active.
-                            if (lastMouseEvent.clientY < config.activationDistance) {
+
+                            // lastMouseEvent.clientY is undefined when dealing with a touch device, resulting in
+                            // no scrolling when dragging an item to the bottom of the screen
+                            // Seen on Chrome 47.0.2526.111
+                            var clientY = lastMouseEvent.clientY;
+                            if (angular.isUndefined(lastMouseEvent.clientY))
+                              clientY = lastMouseEvent.touches[0].clientY;
+
+                            if (clientY < config.activationDistance) {
                                 // If the mouse is on the top of the viewport within the activation distance.
                                 scrollY = -config.scrollDistance;
                             }
-                            else if (lastMouseEvent.clientY > viewportHeight - config.activationDistance) {
+                            else if (clientY > viewportHeight - config.activationDistance) {
                                 // If the mouse is on the bottom of the viewport within the activation distance.
                                 scrollY = config.scrollDistance;
                             }
