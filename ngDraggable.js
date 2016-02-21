@@ -375,14 +375,21 @@ angular.module("ngDraggable", [])
                     }
                 };
 
-                var hitTest = function(x, y) {
+               var hitTest = function(x, y) {
                     var bounds = element[0].getBoundingClientRect();// ngDraggable.getPrivOffset(element);
                     x -= $document[0].body.scrollLeft + $document[0].documentElement.scrollLeft;
                     y -= $document[0].body.scrollTop + $document[0].documentElement.scrollTop;
+                
+                    var draggingElmt = document.getElementsByClassName("dragging")[0];
+                    var display = draggingElmt.style.display;
+                    draggingElmt.style.display = 'none';
+                    var isTopElement = document.elementFromPoint(x, y) == element[0] || element[0].contains( document.elementFromPoint(x, y) );;
+                    draggingElmt.style.display = display;
+                
                     return  x >= bounds.left
                         && x <= bounds.right
                         && y <= bounds.bottom
-                        && y >= bounds.top;
+                        && y >= bounds.top && isTopElement;
                 };
 
                 initialize();
