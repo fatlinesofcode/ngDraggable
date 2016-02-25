@@ -395,6 +395,9 @@ angular.module("ngDraggable", [])
             link: function (scope, element, attrs) {
                 var img, _allowClone=true;
                 var _dragOffset = null;
+                var _mouseOffsetX = 0;
+                var _mouseOffsetY = 0;
+
                 scope.clonedData = {};
                 var initialize = function () {
 
@@ -435,6 +438,9 @@ angular.module("ngDraggable", [])
                         element.css('width', obj.element[0].offsetWidth);
                         element.css('height', obj.element[0].offsetHeight);
 
+                        _mouseOffsetX = obj.event.offsetX
+                        _mouseOffsetY = obj.event.offsetY
+
                         moveElement(obj.tx, obj.ty);
                     }
 
@@ -442,8 +448,8 @@ angular.module("ngDraggable", [])
                 var onDragMove = function(evt, obj) {
                     if(_allowClone) {
 
-                        _tx = obj.tx + obj.dragOffset.left;
-                        _ty = obj.ty + obj.dragOffset.top;
+                        _tx = obj.tx + obj.dragOffset.left + _mouseOffsetX;
+                        _ty = obj.ty + obj.dragOffset.top + _mouseOffsetY;
 
                         moveElement(_tx, _ty);
                     }
