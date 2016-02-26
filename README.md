@@ -45,6 +45,16 @@ Drop area usage:
   Drop area
 </div>
 ```
+#### Setting Targets
+You can set specific drop zone targets for individual draggable items by using
+the `ng-drop-id` and `ng-drop-target` attributes:
+```html
+<div ng-drop="true" ng-drop-id="myDropZone_1"></div>
+<div ng-drop="true" ng-drop-id="myDropZone_2"></div>
+
+<span ng-drag="true" ng-drag-data="{obj}" ng-drop-target="myDropZone_1"></span>
+<span ng-drag="true" ng-drag-data="{obj2}" ng-drop-target="myDropZone_2"></span>
+```
 
 ### Angular Controller:
 
