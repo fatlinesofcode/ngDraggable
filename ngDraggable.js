@@ -72,7 +72,9 @@ angular.module("ngDraggable", [])
                     // add listeners.
 
                     scope.$on('$destroy', onDestroy);
-                    scope.$watch(attrs.ngDrag, onEnableChange);
+                    attrs.$observe('ngDrop', function(value){
+                        _dragEnabled = value;
+                    });
                     scope.$watch(attrs.ngCenterAnchor, onCenterAnchor);
                     // wire up touch events
                     if (_dragHandle) {
@@ -88,9 +90,6 @@ angular.module("ngDraggable", [])
                 };
                 var onDestroy = function (enable) {
                     toggleListeners(false);
-                };
-                var onEnableChange = function (newVal, oldVal) {
-                    _dragEnabled = (newVal);
                 };
                 var onCenterAnchor = function (newVal, oldVal) {
                     if(angular.isDefined(newVal))
@@ -290,7 +289,9 @@ angular.module("ngDraggable", [])
 
                     if (!enable)return;
                     // add listeners.
-                    scope.$watch(attrs.ngDrop, onEnableChange);
+                    attrs.$observe('ngDrop', function(value){
+                        _dropEnabled = value;
+                    });
                     scope.$on('$destroy', onDestroy);
                     scope.$on('draggable:start', onDragStart);
                     scope.$on('draggable:move', onDragMove);
@@ -299,9 +300,6 @@ angular.module("ngDraggable", [])
 
                 var onDestroy = function (enable) {
                     toggleListeners(false);
-                };
-                var onEnableChange = function (newVal, oldVal) {
-                    _dropEnabled=newVal;
                 };
                 var onDragStart = function(evt, obj) {
                     if(! _dropEnabled)return;
@@ -325,7 +323,6 @@ angular.module("ngDraggable", [])
                 };
 
                 var onDragEnd = function (evt, obj) {
-
                     // don't listen to drop events if this is the element being dragged
                     // only update the styles and return
                     if (!_dropEnabled || _myid === obj.uid) {
