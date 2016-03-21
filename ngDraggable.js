@@ -72,8 +72,8 @@ angular.module("ngDraggable", [])
                     // add listeners.
 
                     scope.$on('$destroy', onDestroy);
-                    attrs.$observe('ngDrop', function(value){
-                        _dropEnabled = value;
+                    attrs.$observe('ngDrag', function(value){
+                        _dragEnabled = value;
                     });
                     scope.$watch(attrs.ngCenterAnchor, onCenterAnchor);
                     // wire up touch events
