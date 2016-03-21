@@ -74,6 +74,7 @@ angular.module("ngDraggable", [])
                     scope.$on('$destroy', onDestroy);
                     attrs.$observe('ngDrag', function(value){
                         _dragEnabled = value;
+                        if (_dragEnabled === 'false') _dragEnabled=false;
                     });
                     scope.$watch(attrs.ngCenterAnchor, onCenterAnchor);
                     // wire up touch events
@@ -90,9 +91,6 @@ angular.module("ngDraggable", [])
                 };
                 var onDestroy = function (enable) {
                     toggleListeners(false);
-                };
-                var onEnableChange = function (newVal, oldVal) {
-                    _dragEnabled = (newVal);
                 };
                 var onCenterAnchor = function (newVal, oldVal) {
                     if(angular.isDefined(newVal))
@@ -150,7 +148,6 @@ angular.module("ngDraggable", [])
                     else{
                         _dragOffset = {left:document.body.scrollLeft, top:document.body.scrollTop};
                     }
-
 
                     element.centerX = element[0].offsetWidth / 2;
                     element.centerY = element[0].offsetHeight / 2;
@@ -294,6 +291,7 @@ angular.module("ngDraggable", [])
                     // add listeners.
                     attrs.$observe('ngDrop', function(value){
                         _dropEnabled = value;
+                        if (_dropEnabled === 'false') _dropEnabled=false;
                     });
                     scope.$on('$destroy', onDestroy);
                     scope.$on('draggable:start', onDragStart);
@@ -303,10 +301,6 @@ angular.module("ngDraggable", [])
 
                 var onDestroy = function (enable) {
                     toggleListeners(false);
-                };
-                var onEnableChange = function (newVal, oldVal) {
-                    console.log("DROP", _dropEnabled);
-                    _dropEnabled=newVal;
                 };
                 var onDragStart = function(evt, obj) {
                     if(! _dropEnabled)return;
