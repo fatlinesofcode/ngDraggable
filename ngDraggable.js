@@ -37,7 +37,7 @@ angular.module("ngDraggable", [])
 
                 var _dragOffset = null;
 
-                var _dragEnabled = false;
+                var _dragEnabled = attrs.ngDrag;
 
                 var _pressTimer = null;
 
@@ -73,7 +73,7 @@ angular.module("ngDraggable", [])
 
                     scope.$on('$destroy', onDestroy);
                     attrs.$observe('ngDrop', function(value){
-                        _dragEnabled = value;
+                        _dropEnabled = value;
                     });
                     scope.$watch(attrs.ngCenterAnchor, onCenterAnchor);
                     // wire up touch events
@@ -90,6 +90,9 @@ angular.module("ngDraggable", [])
                 };
                 var onDestroy = function (enable) {
                     toggleListeners(false);
+                };
+                var onEnableChange = function (newVal, oldVal) {
+                    _dragEnabled = (newVal);
                 };
                 var onCenterAnchor = function (newVal, oldVal) {
                     if(angular.isDefined(newVal))
@@ -272,7 +275,7 @@ angular.module("ngDraggable", [])
 
                 var _myid = scope.$id;
 
-                var _dropEnabled=false;
+                var _dropEnabled=attrs.ngDrop;
 
                 var onDropCallback = $parse(attrs.ngDropSuccess);// || function(){};
 
@@ -300,6 +303,10 @@ angular.module("ngDraggable", [])
 
                 var onDestroy = function (enable) {
                     toggleListeners(false);
+                };
+                var onEnableChange = function (newVal, oldVal) {
+                    console.log("DROP", _dropEnabled);
+                    _dropEnabled=newVal;
                 };
                 var onDragStart = function(evt, obj) {
                     if(! _dropEnabled)return;
