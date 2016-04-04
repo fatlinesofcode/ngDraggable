@@ -32,7 +32,12 @@ angular.module("ngDraggable", [])
                 var _dragHandle;
 
                 // to identify the element in order to prevent getting superflous events when a single element has both drag and drop directives on it.
-                var _myid = scope.$id;
+                var _myid = false;
+                if(attrs.id) {
+                    _myid = attrs.id;
+                } else {
+                    _myid = scope.$id;
+                }
                 var _data = null;
 
                 var _dragOffset = null;
@@ -271,7 +276,12 @@ angular.module("ngDraggable", [])
 
                 var _lastDropTouch=null;
 
-                var _myid = scope.$id;
+                var _myid = false;
+                if(attrs.id) {
+                    _myid = attrs.id;
+                } else {
+                    _myid = scope.$id;
+                }
 
                 var _dropEnabled=false;
 
