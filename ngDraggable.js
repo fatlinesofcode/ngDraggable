@@ -49,12 +49,15 @@ angular.module("ngDraggable", [])
                 var onDragStartCallback = $parse(attrs.ngDragStart) || null;
                 var onDragStopCallback = $parse(attrs.ngDragStop) || null;
                 var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
+                var idWithScroll = attrs.ngScrollId || null;
                 var allowTransform = angular.isDefined(attrs.allowTransform) ? scope.$eval(attrs.allowTransform) : true;
 
                 var getDragData = $parse(attrs.ngDragData);
 
                 // deregistration function for mouse move events in $rootScope triggered by jqLite trigger handler
                 var _deregisterRootMoveListener = angular.noop;
+
+                var _scrollTop = 0;
 
                 var initialize = function () {
                     element.attr('draggable', 'false'); // prevent native drag
@@ -154,6 +157,9 @@ angular.module("ngDraggable", [])
                         _dragOffset = {left:document.body.scrollLeft, top:document.body.scrollTop};
                     }
 
+                    if (idWithScroll) {
+                        _scrollTop = element.parents().find('#' + idWithScroll).scrollTop();
+                    }
 
                     element.centerX = element[0].offsetWidth / 2;
                     element.centerY = element[0].offsetHeight / 2;
@@ -167,7 +173,7 @@ angular.module("ngDraggable", [])
                         _ty = _my - element.centerY - $window.pageYOffset;
                     } else {
                         _tx = _mx - _mrx - $window.pageXOffset;
-                        _ty = _my - _mry - $window.pageYOffset;
+                        _ty = _my - _mry - $window.pageYOffset - _scrollTop;
                     }
 
                     $document.on(_moveEvents, onmove);
@@ -197,6 +203,10 @@ angular.module("ngDraggable", [])
                         }
                     }
 
+                    if (idWithScroll) {
+                        _scrollTop = element.parents().find('#' + idWithScroll).scrollTop();
+                    }
+
                     _mx = ngDraggable.inputEvent(evt).pageX;//ngDraggable.getEventProp(evt, 'pageX');
                     _my = ngDraggable.inputEvent(evt).pageY;//ngDraggable.getEventProp(evt, 'pageY');
 
@@ -205,7 +215,7 @@ angular.module("ngDraggable", [])
                         _ty = _my - element.centerY - _dragOffset.top;
                     } else {
                         _tx = _mx - _mrx - _dragOffset.left;
-                        _ty = _my - _mry - _dragOffset.top;
+                        _ty = _my - _mry - _dragOffset.top - _scrollTop;
                     }
 
                     moveElement(_tx, _ty);
