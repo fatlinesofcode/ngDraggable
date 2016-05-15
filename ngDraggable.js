@@ -395,6 +395,8 @@ angular.module("ngDraggable", [])
             link: function (scope, element, attrs) {
                 var img, _allowClone=true;
                 var _dragOffset = null;
+                var _closeToMouse = attrs.ngDragCloneCloseToMouse;
+                var _positionPadding = !isNaN(attrs.ngDragClonePositionPadding) ? attrs.ngDragClonePositionPadding : 0;
                 scope.clonedData = {};
                 var initialize = function () {
 
@@ -435,17 +437,25 @@ angular.module("ngDraggable", [])
                         element.css('width', obj.element[0].offsetWidth);
                         element.css('height', obj.element[0].offsetHeight);
 
-                        moveElement(obj.tx, obj.ty);
+                        if (_closeToMouse) {
+                          moveElement(obj.event.pageX-_positionPadding, obj.event.pageY-_positionPadding);
+                        } else {
+                          moveElement(obj.tx, obj.ty);
+                        }
                     }
 
                 };
                 var onDragMove = function(evt, obj) {
                     if(_allowClone) {
 
-                        _tx = obj.tx + obj.dragOffset.left;
-                        _ty = obj.ty + obj.dragOffset.top;
+                        var _tx = obj.tx + obj.dragOffset.left;
+                        var _ty = obj.ty + obj.dragOffset.top;
 
-                        moveElement(_tx, _ty);
+                        if (_closeToMouse) {
+                          moveElement(obj.event.pageX-_positionPadding, obj.event.pageY-_positionPadding);
+                        } else {
+                          moveElement(_tx, _ty);
+                        }
                     }
                 };
                 var onDragEnd = function(evt, obj) {
