@@ -19,7 +19,7 @@ angular.module("ngDraggable", [])
         };
 
     }])
-    .directive('ngDrag', ['$rootScope', '$parse', '$document', '$window', 'ngDraggable', function ($rootScope, $parse, $document, $window, ngDraggable) {
+    .directive('ngDrag', ['$rootScope', '$parse', '$document', '$window', '$timeout', 'ngDraggable', function ($rootScope, $parse, $document, $window, $timeout, ngDraggable) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -107,29 +107,31 @@ angular.module("ngDraggable", [])
                  * On touch devices as a small delay so as not to prevent native window scrolling
                  */
                 var onpress = function(evt) {
-                    if(! _dragEnabled)return;
+                    $timeout(function () {
 
-                    if (isClickableElement(evt)) {
-                        return;
-                    }
+                      if(! _dragEnabled)return;
 
-                    if (evt.type == "mousedown" && evt.button != 0) {
-                        // Do not start dragging on right-click
-                        return;
-                    }
+                      if (isClickableElement(evt)) {
+                          return;
+                      }
 
-                    if(_hasTouch){
-                        cancelPress();
-                        _pressTimer = setTimeout(function(){
-                            cancelPress();
-                            onlongpress(evt);
-                        },100);
-                        $document.on(_moveEvents, cancelPress);
-                        $document.on(_releaseEvents, cancelPress);
-                    }else{
-                        onlongpress(evt);
-                    }
+                      if (evt.type == "mousedown" && evt.button != 0) {
+                          // Do not start dragging on right-click
+                          return;
+                      }
 
+                      if(_hasTouch){
+                          cancelPress();
+                          _pressTimer = setTimeout(function(){
+                              cancelPress();
+                              onlongpress(evt);
+                          },100);
+                          $document.on(_moveEvents, cancelPress);
+                          $document.on(_releaseEvents, cancelPress);
+                      }else{
+                          onlongpress(evt);
+                      }
+                    });
                 };
 
                 var cancelPress = function() {
