@@ -20,10 +20,8 @@ angular.module("ngDraggable", [])
     };
 
     self.setDraggedData = function (data) {
-      if (!angular.equals(_draggedData, data)) {
-        _draggedData = data;
-        $rootScope.$emit('draggedData.update', _draggedData);
-      }
+      _draggedData = data;
+      $rootScope.$emit('draggedData.update', _draggedData);
     };
 
     self.onDraggedDataUpdate = function (callbackFunc) {
@@ -423,7 +421,9 @@ angular.module("ngDraggable", [])
         scope.clonedData = {};
 
         var unsubClonedDataChange = ngDraggable.onDraggedDataUpdate(function (data) {
-          scope.clonedData = data;
+          $timeout(function() {
+            scope.clonedData = data;;
+          });
         });
 
         scope.$on('destroy', function () {
