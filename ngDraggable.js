@@ -332,6 +332,13 @@ angular.module("ngDraggable", [])
               };
               var onDragStart = function (evt, obj) {
                   if (!_dropEnabled) return;
+
+                  element[0].draggableBoundRect = {
+                      rect: element[0].getBoundingClientRect(),
+                      scrollLeft: $document[0].body.scrollLeft + $document[0].documentElement.scrollLeft,
+                      scrollTop: $document[0].body.scrollTop + $document[0].documentElement.scrollTop
+                  };
+
                   isTouching(obj.x, obj.y, obj.element);
 
                   if (attrs.ngDragStart) {
@@ -403,9 +410,9 @@ angular.module("ngDraggable", [])
               };
 
               var hitTest = function (x, y) {
-                  var bounds = element[0].getBoundingClientRect();// ngDraggable.getPrivOffset(element);
-                  x -= $document[0].body.scrollLeft + $document[0].documentElement.scrollLeft;
-                  y -= $document[0].body.scrollTop + $document[0].documentElement.scrollTop;
+                  var bounds = element[0].draggableBoundRect.rect;//element[0].getBoundingClientRect();
+                  x -= element[0].draggableBoundRect.scrollLeft; // Cached value of $document[0].body.scrollLeft + $document[0].documentElement.scrollLeft
+                  y -= element[0].draggableBoundRect.scrollTop;
                   return x >= bounds.left
                     && x <= bounds.right
                     && y <= bounds.bottom
@@ -473,15 +480,15 @@ angular.module("ngDraggable", [])
                           scope.clonedData = ngDraggable.getDraggedData();
                       });
 
-                      moveElement(obj.event.pageX, obj.event.pageY);
+                      moveElement(obj.event.pageX - document.documentElement.scrollLeft - document.body.scrollLeft, obj.event.pageY - document.documentElement.scrollTop - document.body.scrollTop);
                   }
 
               };
               var onDragMove = function (evt, obj) {
                   if (_allowClone) {
 
-                      _tx = obj.event.pageX;
-                      _ty = obj.event.pageY;
+                      _tx = obj.event.pageX - document.documentElement.scrollLeft - document.body.scrollLeft;
+                      _ty = obj.event.pageY - document.documentElement.scrollTop - document.body.scrollTop;
 
                       moveElement(_tx, _ty);
                   }
