@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ngDraggable</title>
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/spruce/bootstrap.min.css">
+  <style>
+
+    *{
+        -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+    }
+    [ng-drag]{
+        -moz-user-select: -moz-none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    [ng-drag]{
+        width: 100px;
+        height: 100px;
+        background: rgba(255,0,0, 0.5);
+        color:white;
+        text-align: center;
+        padding-top:40px;
+        display: inline-block;
+        margin:0 10px;
+        cursor: move;
+    }
+    ul.draggable-objects:after{
+        display: block;
+        content:"";
+        clear:both;
+    }
+    .draggable-objects li{
+        float:left;
+        display: block;
+        width: 120px;
+        height:100px;
+    }
+
+  </style>
+</head>
+<body ng-app="ExampleApp">
+
+  <div class="container" ng-controller="MainCtrl">
+
+    <div class="row">
+      <h1>ngDraggable Example</h1>
+    </div>
+
+        <ul class="draggable-objects">
+            <li  ng-repeat="obj in draggableObjects" >
+                <div ng-drag="true" ng-drag-data="obj" data-allow-transform="true"
+                     ng-drop="true" ng-drop-data="obj" ng-drop-success="onDropComplete($data, $event, $dropdata)"
+                > {{obj.name}} </div>
+            </li>
+        </ul>
+
+  </div>
+  <footer style="margin-top:2000px;">footer</footer>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
+  <script src="ngDraggable.js"></script>
+  <script>
+    angular.module('ExampleApp', ['ngDraggable']).
+      controller('MainCtrl', function ($scope) {
+        $scope.centerAnchor = true;
+        $scope.toggleCenterAnchor = function () {$scope.centerAnchor = !$scope.centerAnchor}
+        $scope.draggableObjects = [{name:'one'}, {name:'two'}, {name:'three'}];
+
+        $scope.onDropComplete=function(data, evt, dropData){
+            var tempName = angular.copy(dropData.name);
+            dropData.name = data.name;
+            data.name = tempName;
+            console.log(data, dropData);
+        }
+      });
+  </script>
+</body>
+</html>
