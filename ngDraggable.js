@@ -18,6 +18,8 @@ angular.module("ngDraggable", [])
             return event;
         };
 
+        scope.touchTimeout = 100;
+
     }])
     .directive('ngDrag', ['$rootScope', '$parse', '$document', '$window', 'ngDraggable', function ($rootScope, $parse, $document, $window, ngDraggable) {
         return {
@@ -82,7 +84,8 @@ angular.module("ngDraggable", [])
                         // no handle(s) specified, use the element as the handle
                         element.on(_pressEvents, onpress);
                     }
-                    if(! _hasTouch && element[0].nodeName.toLowerCase() == "img"){
+                    // if(! _hasTouch && element[0].nodeName.toLowerCase() == "img"){
+                    if( element[0].nodeName.toLowerCase() == "img"){
                         element.on('mousedown', function(){ return false;}); // prevent native drag for images
                     }
                 };
@@ -107,6 +110,7 @@ angular.module("ngDraggable", [])
                  * On touch devices as a small delay so as not to prevent native window scrolling
                  */
                 var onpress = function(evt) {
+                    // console.log("110"+" onpress: "+Math.random()+" "+ evt.type);
                     if(! _dragEnabled)return;
 
                     if (isClickableElement(evt)) {
@@ -118,12 +122,15 @@ angular.module("ngDraggable", [])
                         return;
                     }
 
-                    if(_hasTouch){
+                    var useTouch = evt.type === 'touchstart' ? true : false;
+
+
+                    if(useTouch){
                         cancelPress();
                         _pressTimer = setTimeout(function(){
                             cancelPress();
                             onlongpress(evt);
-                        },100);
+                        },ngDraggable.touchTimeout);
                         $document.on(_moveEvents, cancelPress);
                         $document.on(_releaseEvents, cancelPress);
                     }else{

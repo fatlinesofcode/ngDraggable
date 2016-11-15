@@ -1,6 +1,10 @@
 ngDraggable
 ===========
 
+> *NOTE:*
+> I'm not actively maintaining this project any more. If any anyone would like to take on that responsible please get in touch
+
+
 Drag and drop module for Angular JS with support for touch devices. [`demo`](http://htmlpreview.github.io/?https://github.com/fatlinesofcode/ngDraggable/blob/master/example.html).
 
 ### Usage:
