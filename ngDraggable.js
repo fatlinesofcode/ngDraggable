@@ -219,21 +219,25 @@ angular.module("ngDraggable", [])
                 var onrelease = function(evt) {
                     if (!_dragEnabled)
                         return;
+
+                    $document.off(_moveEvents, onmove);
+                    $document.off(_releaseEvents, onrelease);
+                    _deregisterRootMoveListener();
+
+                    if (!element.hasClass('dragging'))
+                        return;
+
                     evt.preventDefault();
                     $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data, callback:onDragComplete, uid: _myid});
                     element.removeClass('dragging');
                     element.parent().find('.drag-enter').removeClass('drag-enter');
                     reset();
-                    $document.off(_moveEvents, onmove);
-                    $document.off(_releaseEvents, onrelease);
 
                     if (onDragStopCallback ){
                         scope.$apply(function () {
                             onDragStopCallback(scope, {$data: _data, $event: evt});
                         });
                     }
-
-                    _deregisterRootMoveListener();
                 };
 
                 var onDragComplete = function(evt) {
