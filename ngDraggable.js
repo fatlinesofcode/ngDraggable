@@ -39,7 +39,7 @@ angular.module("ngDraggable", [])
 
                 var _dragOffset = null;
 
-                var _dragEnabled = false;
+                var _dragEnabled = attrs.ngDrag;
 
                 var _pressTimer = null;
 
@@ -74,7 +74,10 @@ angular.module("ngDraggable", [])
                     // add listeners.
 
                     scope.$on('$destroy', onDestroy);
-                    scope.$watch(attrs.ngDrag, onEnableChange);
+                    attrs.$observe('ngDrag', function(value){
+                        _dragEnabled = value;
+                        if (_dragEnabled === 'false') _dragEnabled=false;
+                    });
                     scope.$watch(attrs.ngCenterAnchor, onCenterAnchor);
                     // wire up touch events
                     if (_dragHandle) {
@@ -91,9 +94,6 @@ angular.module("ngDraggable", [])
                 };
                 var onDestroy = function (enable) {
                     toggleListeners(false);
-                };
-                var onEnableChange = function (newVal, oldVal) {
-                    _dragEnabled = (newVal);
                 };
                 var onCenterAnchor = function (newVal, oldVal) {
                     if(angular.isDefined(newVal))
@@ -156,7 +156,6 @@ angular.module("ngDraggable", [])
                     else{
                         _dragOffset = {left:document.body.scrollLeft, top:document.body.scrollTop};
                     }
-
 
                     element.centerX = element[0].offsetWidth / 2;
                     element.centerY = element[0].offsetHeight / 2;
@@ -281,7 +280,7 @@ angular.module("ngDraggable", [])
 
                 var _myid = scope.$id;
 
-                var _dropEnabled=false;
+                var _dropEnabled=attrs.ngDrop;
 
                 var onDropCallback = $parse(attrs.ngDropSuccess);// || function(){};
 
@@ -298,7 +297,10 @@ angular.module("ngDraggable", [])
 
                     if (!enable)return;
                     // add listeners.
-                    scope.$watch(attrs.ngDrop, onEnableChange);
+                    attrs.$observe('ngDrop', function(value){
+                        _dropEnabled = value;
+                        if (_dropEnabled === 'false') _dropEnabled=false;
+                    });
                     scope.$on('$destroy', onDestroy);
                     scope.$on('draggable:start', onDragStart);
                     scope.$on('draggable:move', onDragMove);
@@ -307,9 +309,6 @@ angular.module("ngDraggable", [])
 
                 var onDestroy = function (enable) {
                     toggleListeners(false);
-                };
-                var onEnableChange = function (newVal, oldVal) {
-                    _dropEnabled=newVal;
                 };
                 var onDragStart = function(evt, obj) {
                     if(! _dropEnabled)return;
@@ -333,7 +332,6 @@ angular.module("ngDraggable", [])
                 };
 
                 var onDragEnd = function (evt, obj) {
-
                     // don't listen to drop events if this is the element being dragged
                     // only update the styles and return
                     if (!_dropEnabled || _myid === obj.uid) {
