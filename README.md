@@ -60,7 +60,7 @@ app.controller('MainCtrl', function ($scope) {
     $scope.onDropComplete=function(data,evt){
         console.log("drop success, data:", data);
     }
- };
+ });
 ```
 
 ## Examples
