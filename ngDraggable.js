@@ -525,7 +525,7 @@ angular.module("ngDraggable", [])
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
-                element.find('*').attr('ng-cancel-drag', 'ng-cancel-drag');
+                element.find('*').add(element).attr('ng-cancel-drag', 'ng-cancel-drag');
             }
         };
     }])
