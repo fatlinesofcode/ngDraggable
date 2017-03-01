@@ -42,9 +42,9 @@ angular.module("ngDraggable", [])
                 var _dragEnabled = false;
 
                 var _pressTimer = null;
-
-                var onDragStartCallback = $parse(attrs.ngDragStart) || null;
-                var onDragStopCallback = $parse(attrs.ngDragStop) || null;
+                
+                var onDragStartCallback = $parse(attrs.ngDragBegin) || null;
+                var onDragStopCallback = $parse(attrs.ngDragFinish) || null;
                 var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
                 var allowTransform = angular.isDefined(attrs.allowTransform) ? scope.$eval(attrs.allowTransform) : true;
 
@@ -285,8 +285,8 @@ angular.module("ngDraggable", [])
 
                 var onDropCallback = $parse(attrs.ngDropSuccess);// || function(){};
 
-                var onDragStartCallback = $parse(attrs.ngDragStart);
-                var onDragStopCallback = $parse(attrs.ngDragStop);
+                var onDragStartCallback = $parse(attrs.ngDragBegin);
+                var onDragStopCallback = $parse(attrs.ngDragFinish);
                 var onDragMoveCallback = $parse(attrs.ngDragMove);
 
                 var initialize = function () {
@@ -315,7 +315,7 @@ angular.module("ngDraggable", [])
                     if(! _dropEnabled)return;
                     isTouching(obj.x,obj.y,obj.element);
 
-                    if (attrs.ngDragStart) {
+                    if (attrs.ngDragBegin) {
                         $timeout(function(){
                             onDragStartCallback(scope, {$data: obj.data, $event: obj});
                         });
@@ -353,7 +353,7 @@ angular.module("ngDraggable", [])
                         }
                     }
 
-                    if (attrs.ngDragStop) {
+                    if (attrs.ngDragFinish) {
                         $timeout(function(){
                             onDragStopCallback(scope, {$data: obj.data, $event: obj});
                         });
