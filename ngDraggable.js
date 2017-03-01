@@ -289,6 +289,8 @@ angular.module("ngDraggable", [])
                 var onDragStopCallback = $parse(attrs.ngDragStop);
                 var onDragMoveCallback = $parse(attrs.ngDragMove);
 
+                var getDragData = $parse(attrs.ngDragData);
+
                 var initialize = function () {
                     toggleListeners(true);
                 };
@@ -347,8 +349,9 @@ angular.module("ngDraggable", [])
                         }
 
                         if (attrs.ngDropSuccess) {
+                            var _data = getDragData(scope);
                             $timeout(function(){
-                                onDropCallback(scope, {$data: obj.data, $event: obj, $target: scope.$eval(scope.value)});
+                                onDropCallback(scope, {$data: obj.data, $event: obj, $dropdata: _data, $target: scope.$eval(scope.value)});
                             });
                         }
                     }
