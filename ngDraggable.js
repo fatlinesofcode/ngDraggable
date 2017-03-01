@@ -27,6 +27,7 @@ angular.module("ngDraggable", [])
             link: function (scope, element, attrs) {
                 scope.value = attrs.ngDrag;
                 var offset,_centerAnchor=false,_mx,_my,_tx,_ty,_mrx,_mry;
+                var _dropTarget = attrs.ngDropTarget;
                 var _hasTouch = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
                 var _pressEvents = 'touchstart mousedown';
                 var _moveEvents = 'touchmove mousemove';
@@ -213,14 +214,14 @@ angular.module("ngDraggable", [])
 
                     moveElement(_tx, _ty);
 
-                    $rootScope.$broadcast('draggable:move', { x: _mx, y: _my, tx: _tx, ty: _ty, event: evt, element: element, data: _data, uid: _myid, dragOffset: _dragOffset });
+                    $rootScope.$broadcast('draggable:move', { x: _mx, y: _my, tx: _tx, ty: _ty, event: evt, element: element, data: _data, uid: _myid, dragOffset: _dragOffset, dropTarget: _dropTarget});
                 };
 
                 var onrelease = function(evt) {
                     if (!_dragEnabled)
                         return;
                     evt.preventDefault();
-                    $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data, callback:onDragComplete, uid: _myid});
+                    $rootScope.$broadcast('draggable:end', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data, callback:onDragComplete, uid: _myid, dropTarget: _dropTarget});
                     element.removeClass('dragging');
                     element.parent().find('.drag-enter').removeClass('drag-enter');
                     reset();
@@ -276,6 +277,8 @@ angular.module("ngDraggable", [])
             link: function (scope, element, attrs) {
                 scope.value = attrs.ngDrop;
                 scope.isTouching = false;
+                
+                var _dropId = attrs.ngDropId;
 
                 var _lastDropTouch=null;
 
@@ -336,7 +339,10 @@ angular.module("ngDraggable", [])
 
                     // don't listen to drop events if this is the element being dragged
                     // only update the styles and return
-                    if (!_dropEnabled || _myid === obj.uid) {
+                        if (!_dropEnabled 
+                            || _myid === obj.uid 
+                            // If the dropTaret and dropId don't match, don't update
+                            || obj.dropTarget !== _dropId) {
                         updateDragStyles(false, obj.element);
                         return;
                     }
