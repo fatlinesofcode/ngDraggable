@@ -21,7 +21,7 @@ angular.module("ngDraggable", [])
         scope.touchTimeout = 100;
 
     }])
-    .directive('ngDrag', ['$rootScope', '$parse', '$document', '$window', 'ngDraggable', function ($rootScope, $parse, $document, $window, ngDraggable) {
+    .directive('ngDrag', ['$rootScope', '$parse', '$document', '$window', 'ngDraggable', '$timeout', function ($rootScope, $parse, $document, $window, ngDraggable, $timeout) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -127,7 +127,7 @@ angular.module("ngDraggable", [])
 
                     if(useTouch){
                         cancelPress();
-                        _pressTimer = setTimeout(function(){
+                        _pressTimer = $timeout(function(){
                             cancelPress();
                             onlongpress(evt);
                             onmove(evt);
@@ -141,7 +141,7 @@ angular.module("ngDraggable", [])
                 };
 
                 var cancelPress = function() {
-                    clearTimeout(_pressTimer);
+                    $timeout.cancel(_pressTimer);
                     $document.off(_moveEvents, cancelPress);
                     $document.off(_releaseEvents, cancelPress);
                 };
