@@ -40,6 +40,8 @@ Draggable usage:
 ```ng-drag-start``` and ```ng-drag-move``` is also available. Add to the ng-drop element.
 ``ng-drag-stop`` can be used when you want to react to the user dragging an item and it wasn't dropped into the target container.
 
+```ng-drag-dynamic``` can be used when you want to set ng-drop enable value at the moment you start dragging.
+
 ```draggable:start```, ```draggable:move``` and  ```draggable:end``` events are broadcast on drag actions.
 
 
