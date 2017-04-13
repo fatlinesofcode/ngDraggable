@@ -659,3 +659,7 @@ angular.module("ngDraggable", [])
             }
         };
     }]);
+
+if (typeof module !== 'undefined' && typeof exports !== 'undefined' && module.exports === exports) {
+    module.exports = 'ngDraggable';
+}
