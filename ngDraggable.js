@@ -43,6 +43,7 @@ angular.module("ngDraggable", [])
 
                 var _pressTimer = null;
 
+                var scrollContainer = angular.isDefined(attrs.ngDragScrollContainer) ? angular.element(attrs.ngDragScrollContainer)[0] : null; 
                 var onDragStartCallback = $parse(attrs.ngDragStart) || null;
                 var onDragStopCallback = $parse(attrs.ngDragStop) || null;
                 var onDragSuccessCallback = $parse(attrs.ngDragSuccess) || null;
@@ -210,7 +211,10 @@ angular.module("ngDraggable", [])
                         _tx = _mx - _mrx - _dragOffset.left;
                         _ty = _my - _mry - _dragOffset.top;
                     }
-
+                    if (scrollContainer) {
+                        _tx += scrollContainer.scrollLeft;
+                        _ty += scrollContainer.scrollTop;
+                    }
                     moveElement(_tx, _ty);
 
                     $rootScope.$broadcast('draggable:move', { x: _mx, y: _my, tx: _tx, ty: _ty, event: evt, element: element, data: _data, uid: _myid, dragOffset: _dragOffset });
