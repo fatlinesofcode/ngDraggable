@@ -203,7 +203,15 @@ angular.module("ngDraggable", [])
                         _ty = _my - _mry - _dragOffset.top;
                     }
 
-                    moveElement(_tx, _ty);
+                    if(allowTransform)
+                        moveElement(_tx, _ty);
+                    else{
+						var ty = _mry - _dragOffset.top;
+						var tx = _mrx - _dragOffset.left;
+                        var trueMoveX = ngDraggable.inputEvent(evt).clientX - tx;
+						var trueMoveY = ngDraggable.inputEvent(evt).clientY - ty;
+						moveElement(trueMoveX, trueMoveY);
+                    }
 
                     $rootScope.$broadcast('draggable:move', { x: _mx, y: _my, tx: _tx, ty: _ty, event: evt, element: element, data: _data, uid: _myid, dragOffset: _dragOffset });
                 };
@@ -254,7 +262,7 @@ angular.module("ngDraggable", [])
                             '-ms-transform': 'matrix(1, 0, 0, 1, ' + x + ', ' + y + ')'
                         });
                     }else{
-                        element.css({'left':x+'px','top':y+'px', 'position':'fixed'});
+                        element.css({'left': x+'px','top': y+'px', 'position': 'fixed', 'z-index': 99999});
                     }
                 };
                 initialize();
