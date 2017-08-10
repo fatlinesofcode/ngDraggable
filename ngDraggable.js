@@ -206,11 +206,13 @@ angular.module("ngDraggable", [])
                     if(allowTransform)
                         moveElement(_tx, _ty);
                     else{
+						//Note: does not take into account _centerAnchor
+						//Click offset in element coordinates
 						var ty = _mry - _dragOffset.top;
 						var tx = _mrx - _dragOffset.left;
-                        var trueMoveX = ngDraggable.inputEvent(evt).clientX - tx;
-						var trueMoveY = ngDraggable.inputEvent(evt).clientY - ty;
-						moveElement(trueMoveX, trueMoveY);
+						var newX = ngDraggable.inputEvent(evt).clientX - tx;
+						var newY = ngDraggable.inputEvent(evt).clientY - ty;
+						moveElement(newX, newY);
                     }
 
                     $rootScope.$broadcast('draggable:move', { x: _mx, y: _my, tx: _tx, ty: _ty, event: evt, element: element, data: _data, uid: _myid, dragOffset: _dragOffset });
