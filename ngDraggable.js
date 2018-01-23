@@ -195,7 +195,9 @@ angular.module("ngDraggable", [])
                     if (!element.hasClass('dragging')) {
                         _data = getDragData(scope);
                         element.addClass('dragging');
-                        _scrolled = scrollContainer.scrollTop > 0;
+                        if (scrollContainer) {
+                            _scrolled = scrollContainer.scrollTop > 0;
+                        }
                         $rootScope.$broadcast('draggable:start', {x:_mx, y:_my, tx:_tx, ty:_ty, event:evt, element:element, data:_data});
                         if (onDragStartCallback ){
                             scope.$apply(function () {
@@ -215,7 +217,7 @@ angular.module("ngDraggable", [])
                         _ty = _my - _mry - _dragOffset.top;
                     }
 
-                    if (!_scrolled) {
+                    if (scrollContainer && !_scrolled) {
                         _ty += scrollContainer.scrollTop;
                     }
                     moveElement(_tx, _ty);
@@ -591,12 +593,8 @@ angular.module("ngDraggable", [])
                         var viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
                         var viewportHeight = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 
-                        // if scrollContainer exists
-                        let scrollContainerJQuery;
-
                         if (scrollContainer) {
-                            scrollContainerJQuery = angular.element(scrollContainer);
-                            viewportHeight = scrollContainerJQuery.height();
+                            viewportHeight = scrollContainer.clientHeight;
                         }
 
                         var scrollX = 0;
@@ -616,11 +614,11 @@ angular.module("ngDraggable", [])
 
                         if (config.verticalScroll) {
                             // If vertical scrolling is active.
-                            if ((lastMouseEvent.clientY - (scrollContainer ? scrollContainerJQuery.offset().top : 0)) < config.activationDistance) {
+                            if ((lastMouseEvent.clientY - (scrollContainer ? scrollContainer.getBoundingClientRect().top : 0)) < config.activationDistance) {
                                 // If the mouse is on the top of the viewport within the activation distance.
                                 scrollY = -config.scrollDistance;
                             }
-                            else if (lastMouseEvent.clientY > ((scrollContainer ? scrollContainerJQuery.offset().top : 0) + viewportHeight) - config.activationDistance) {
+                            else if (lastMouseEvent.clientY > ((scrollContainer ? scrollContainer.getBoundingClientRect().top : 0) + viewportHeight) - config.activationDistance) {
                                 // If the mouse is on the bottom of the viewport within the activation distance.
                                 scrollY = config.scrollDistance;
                             }
@@ -656,7 +654,7 @@ angular.module("ngDraggable", [])
 
                             lastMouseEvent.pageX += horizontalScrollAmount;
                             lastMouseEvent.pageY += verticalScrollAmount;
-                            
+
                             $rootScope.$emit('draggable:_triggerHandlerMove', lastMouseEvent);
                         }
 
