@@ -622,7 +622,7 @@ angular.module("ngDraggable", [])
                             }
                             else if (lastMouseEvent.clientY > (scrollContainer
                                     ? scrollContainer.getBoundingClientRect().bottom
-                                    : viewportHeight - config.activationDistance)) {
+                                    : (viewportHeight - config.activationDistance))) {
                                 // If the mouse is on the bottom of the viewport within the activation distance.
                                 scrollY = config.scrollDistance;
                             }
