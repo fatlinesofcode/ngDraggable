@@ -560,7 +560,6 @@ angular.module("ngDraggable", [])
                     scrollDistance: attrs.scrollDistance || 25
                 };
 
-
                 var reqAnimFrame = (function() {
                     return window.requestAnimationFrame ||
                         window.webkitRequestAnimationFrame ||
@@ -615,15 +614,20 @@ angular.module("ngDraggable", [])
 
                         if (config.verticalScroll) {
                             // If vertical scrolling is active.
-                            if ((lastMouseEvent.clientY - (scrollContainer ? scrollContainer.getBoundingClientRect().top : 0)) < config.activationDistance) {
+                            if (lastMouseEvent.clientY < (scrollContainer
+                                    ? scrollContainer.getBoundingClientRect().top
+                                    : config.activationDistance)) {
                                 // If the mouse is on the top of the viewport within the activation distance.
                                 scrollY = -config.scrollDistance;
                             }
-                            else if (lastMouseEvent.clientY > ((scrollContainer ? scrollContainer.getBoundingClientRect().top : 0) + viewportHeight) - config.activationDistance) {
+                            else if (lastMouseEvent.clientY > (scrollContainer
+                                    ? scrollContainer.getBoundingClientRect().bottom
+                                    : viewportHeight - config.activationDistance)) {
                                 // If the mouse is on the bottom of the viewport within the activation distance.
                                 scrollY = config.scrollDistance;
                             }
                         }
+
 
                         if (scrollX !== 0 || scrollY !== 0) {
                             // Record the current scroll position.
