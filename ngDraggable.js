@@ -122,7 +122,6 @@ angular.module('ngDraggable', [])
                  * On touch devices as a small delay so as not to prevent native window scrolling
                  */
                 var onpress = function (evt) {
-                    // console.log("110"+" onpress: "+Math.random()+" "+ evt.type);
                     if (!_dragEnabled) return;
 
                     if (isClickableElement(evt)) {
@@ -134,7 +133,7 @@ angular.module('ngDraggable', [])
                         return;
                     }
 
-                    var useTouch = evt.type === 'touchstart' ? true : false;
+                    var useTouch = evt.type === 'touchstart';
 
 
                     if (useTouch) {
@@ -296,7 +295,7 @@ angular.module('ngDraggable', [])
                     if (allowTransform)
                         element.css({ transform: '', 'z-index': '', '-webkit-transform': '', '-ms-transform': '' });
                     else
-                        element.css({ 'position': '', top: '', left: '' });
+                        element.css({ position: '', top: '', left: '', 'z-index': '' });
                 };
 
                 var moveElement = function (x, y) {
@@ -312,7 +311,7 @@ angular.module('ngDraggable', [])
                             'left': x + 'px',
                             'top': y + 'px',
                             'position': 'fixed',
-                            'z-index': '99999'
+                            'z-index': 99999
                         });
                     }
                 };
