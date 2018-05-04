@@ -373,7 +373,7 @@ angular.module("ngDraggable", [])
                 };
 
                 var updateDragStyles = function(touching, dragElement) {
-                    if(touching){
+                    if(touching && element.attr('ng-drop')==='true'){
                         element.addClass('drag-enter');
                         dragElement.addClass('drag-over');
                     }else if(_lastDropTouch == element){
