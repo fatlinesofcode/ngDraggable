@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>ngDraggable</title>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/2.3.1/spruce/bootstrap.min.css">
+  <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootswatch/2.3.1/spruce/bootstrap.min.css">
   <style>
 
     *{
@@ -88,7 +88,7 @@
           {{obj.name}}
           <div ng-drag="true" ng-drag-data="obj"></div>
       </div>
-      <div class="drag-object"  style="background-color: transparent">
+      <div class="drag-object"  style="background-color: transparent; overflow: visible">
           <div ng-drag="true" class="drag-object" ng-drag-data="draggableObjects[3]">{{draggableObjects[3].name}}</div>
       </div>
       <hr/>
@@ -100,13 +100,7 @@
           </div>
 
       </div>
-
-
-
     <hr>
-
-
-
   </div>
 
 
@@ -116,11 +110,7 @@
 
   <footer style="margin-top:2000px;">footer</footer>
 
-
-
-
-  <script src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'></script>
-  <script src='//ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular.min.js'></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
   <script src="ngDraggable.js"></script>
   <script>
     angular.module('ExampleApp', ['ngDraggable']).
